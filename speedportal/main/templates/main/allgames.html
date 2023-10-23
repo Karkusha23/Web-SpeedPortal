@@ -1,0 +1,16 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+Все игры
+{% endblock %}
+
+{% block content %}
+    <h1>Все игры</h1>
+    <ul>
+    {% for game in games %}
+        <li>
+            <img src="{{ game.icon.url }}" height=30 width=30><a href="{{ game.steam_link }}">{{ game.name }}</a><p> - {{ game.description }}</p>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'users/base.html' %}
+
+{% block title %}
+Войти
+{% endblock %}
+
+{% block content %}
+    <h1>Войти</h1>
+    <form action="{% url 'users:login' %}" method="post">
+        {% csrf_token %}
+        <p>
+            <label for="{{ form.email.id_for_label }}">Введите адрес электронной почты</label>
+            {{ form.username }}
+        </p>
+        <p>
+            <label for="{{ form.password.id_for_label }}">Введите пароль</label>
+            {{ form.password }}
+        </p>
+        <p>
+            <input type="submit">
+        </p>
+    </form>
+{% endblock %}

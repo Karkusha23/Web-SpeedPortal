@@ -1,0 +1,15 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+Главная страница
+{% endblock %}
+
+{% load static %}
+{% block styles %}
+<link href="{% static 'style_green.css' %}", rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<h1>Главная страница</h1>
+<p>Текст</p>
+{% endblock %}
