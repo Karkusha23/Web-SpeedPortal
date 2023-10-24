@@ -9,15 +9,16 @@
     <form action="{% url 'users:login' %}" method="post">
         {% csrf_token %}
         <p>
-            <label for="{{ form.email.id_for_label }}">Введите адрес электронной почты</label>
+            <label for="{{ form.email.id_for_label }}">Адрес электронной почты</label>
             {{ form.username }}
         </p>
         <p>
-            <label for="{{ form.password.id_for_label }}">Введите пароль</label>
+            <label for="{{ form.password.id_for_label }}">Пароль</label>
             {{ form.password }}
         </p>
         <p>
             <input type="submit">
         </p>
     </form>
+    <a href="{% url 'users:registration' %}">У Вас нет аккаунта? Зарегистрироваться</a>
 {% endblock %}

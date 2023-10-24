@@ -5,5 +5,28 @@
 {% endblock %}
 
 {% block content %}
-<h1>Зарегистрироваться</h1>
+    <h1>Зарегистрироваться</h1>
+    <form action="{% url 'users:registration' %}" method="post">
+        {% csrf_token %}
+        <p>
+            <label for="{{ form.email.id_for_label }}">Адрес электронной почты</label>
+            {{ form.email }}
+        </p>
+        <p>
+            <label for="{{ form.username.id_for_label }}">Имя пользователя</label>
+            {{ form.username }}
+        </p>
+        <p>
+            <label for="{{ form.password1.id_for_label }}">Пароль</label>
+            {{ form.password1 }}
+        </p>
+        <p>
+            <label for="{{ form.password2.id_for_label }}">Подтверждение пароля</label>
+            {{ form.password2 }}
+        </p>
+        <p>
+            <input type="submit">
+        </p>
+    </form>
+    <a href="{% url 'users:login' %}">У Вас уже есть аккаунт? Войти</a>
 {% endblock %}
