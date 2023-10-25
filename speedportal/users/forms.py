@@ -21,10 +21,14 @@ class UserRegistrationForm(UserCreationForm):
         fields = ('email', 'username', 'password1', 'password2')
 
 
-class CustomUserChangeForm(UserChangeForm):
+class UserProfileForm(UserChangeForm):
+    email = forms.EmailField(widget=forms.EmailInput(attrs={}))
+    username = forms.CharField(widget=forms.TextInput(attrs={}))
+    pfp = forms.ImageField(widget=forms.FileInput(attrs={}), required=False)
+    about = forms.CharField(widget=forms.TextInput(attrs={}), required=False)
     class Meta:
         model = User
-        fields = ('email',)
+        fields = ('email', 'username', 'pfp', 'about')
 
 
 class UserLoginForm(AuthenticationForm):

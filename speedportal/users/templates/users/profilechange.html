@@ -1,0 +1,30 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+Профиль: {{ user.username }}
+{% endblock %}
+
+{% block content %}
+  <form action="{% url 'users:profile_change' %}" method="post", enctype="multipart/form-data">
+    {% csrf_token %}
+    <p>
+      <label for="{{ form.pfp.id_for_label }}">Адрес электронной почты</label>
+      {{ form.pfp }}
+    </p>
+    <p>
+      <label for="{{ form.username.id_for_label }}">Имя пользователя</label>
+      {{ form.username }}
+    </p>
+    <p>
+      <label for="{{ form.email.id_for_label }}">Адрес электронной почты</label>
+      {{ form.email }}
+    </p>
+    <p>
+      <label for="{{ form.about.id_for_label }}">О себе</label>
+      {{ form.about }}
+    </p>
+    <p>
+      <input type="submit">
+    </p>
+  </form>
+{% endblock %}
