@@ -5,10 +5,11 @@
 {% endblock %}
 
 {% block content %}
+  <p><img src="{{ user.pfp.url }}" height=30 width=30></p>
   <form action="{% url 'users:profile_change' %}" method="post", enctype="multipart/form-data">
     {% csrf_token %}
     <p>
-      <label for="{{ form.pfp.id_for_label }}">Адрес электронной почты</label>
+      <label for="{{ form.pfp.id_for_label }}">Изображение профиля</label>
       {{ form.pfp }}
     </p>
     <p>

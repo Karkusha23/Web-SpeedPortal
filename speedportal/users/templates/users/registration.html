@@ -28,5 +28,6 @@
             <input type="submit">
         </p>
     </form>
+    {{ form.errors }}
     <a href="{% url 'users:login' %}">У Вас уже есть аккаунт? Войти</a>
 {% endblock %}

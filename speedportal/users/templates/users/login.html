@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block content %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
     <h1>Войти</h1>
     <form action="{% url 'users:login' %}" method="post">
         {% csrf_token %}
@@ -20,5 +23,6 @@
             <input type="submit">
         </p>
     </form>
+    {{ form.non_field_errors }}
     <a href="{% url 'users:registration' %}">У Вас нет аккаунта? Зарегистрироваться</a>
 {% endblock %}
