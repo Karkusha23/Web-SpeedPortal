@@ -35,9 +35,9 @@ def registration(request):
     }
     return render(request, 'users/registration.html', context)
 
-def profile(request):
+def profile(request, username):
     context = {
-
+        'user_to_show': User.objects.get(username=username)
     }
     return render(request, 'users/profile.html', context)
 

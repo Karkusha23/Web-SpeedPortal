@@ -7,8 +7,8 @@ app_name = 'main'
 
 urlpatterns = [
     path('', views.index, name='home'),
-    path('about', views.about, name='about'),
-    path('allgames', views.all_games, name='all_games'),
+    path('about/', views.about, name='about'),
+    path('allgames/', views.all_games, name='all_games'),
 ]
 
 if settings.DEBUG:

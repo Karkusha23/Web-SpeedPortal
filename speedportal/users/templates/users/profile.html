@@ -1,12 +1,14 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
-Профиль: {{ user.username }}
+Профиль: {{ user_to_show.username }}
 {% endblock %}
 
 {% block content %}
-    <h1><img src="{{ user.pfp.url }}" height=30 width=30>{{ user.username }}</h1>
+    <h1><img src="{{ user_to_show.pfp.url }}" height=30 width=30>{{ user_to_show.username }}</h1>
+    {% if user.id == user_to_show.id %}
     <a href="{% url 'users:profile_change' %}">Изменить</a>
-    <p>Очки: {{ user.points }}</p>
-    <p>О себе: {{ user.about }}</p>
+    {% endif %}
+    <p>Очки: {{ user_to_show.points }}</p>
+    <p>О себе: {{ user_to_show.about }}</p>
 {% endblock %}
