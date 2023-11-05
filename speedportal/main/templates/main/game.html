@@ -1,0 +1,20 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+{{ game.name }}
+{% endblock %}
+
+{% block content %}
+    <p><img src="{{ game.banner.url }}" height=100 wigth=640></p>
+    <h1><img src="{{ game.icon.url }}" height=30 width=30>{{ game.name }}</h1>
+    <p>{{ game.description }}</p>
+    <p><a href="{{ game.steam_link }}">Игра в Steam</a></p>
+    <h3>Доступные категории:</h3>
+    <ul>
+    {% for allowed_category in allowed_categories %}
+        <li>
+            {{ allowed_category.category.name }}
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}
