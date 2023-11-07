@@ -83,11 +83,16 @@ SECRET_KEY = env("SECRET_KEY")
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env("DB_NAME"),
-        'USER': env("DB_USER"),
-        'PASSWORD': env("DB_PASSWORD"),
-        'HOST': env("DB_HOST"),
-        'PORT': env("DB_PORT"),
+        # 'NAME': env("DB_NAME"),
+        # 'PASSWORD': env("DB_PASSWORD"),
+        # 'USER': env("DB_USER"),
+        # 'HOST': env("DB_HOST"),
+        # 'PORT': env("DB_PORT"),
+        'NAME': 'speedportal_db',
+        'USER': 'postgres',
+        'PASSWORD': '123',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
