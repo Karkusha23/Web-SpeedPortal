@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy
 from .managers import CustomUserManager
+from django.utils.text import slugify
 
 class User(AbstractBaseUser, PermissionsMixin):
 
@@ -12,6 +13,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(default=timezone.now)
 
     username = models.CharField(gettext_lazy('Имя пользователя'), max_length=50, unique=True)
+    slug = models.SlugField(max_length=50, unique=True)
     pfp = models.ImageField(upload_to='pfps', default='pfps/def_pfp.jpg')
     points = models.PositiveIntegerField(default=0)
     about = models.TextField(blank=True, default='')
@@ -20,6 +22,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.username)
+        super(User, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.email

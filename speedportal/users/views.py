@@ -36,9 +36,9 @@ def registration(request):
     }
     return render(request, 'users/registration.html', context)
 
-def profile(request, user_id):
+def profile(request, user_slug):
     context = {
-        'user_to_show': User.objects.get(id=user_id)
+        'user_to_show': User.objects.get(slug=user_slug)
     }
     return render(request, 'users/profile.html', context)
 

@@ -9,7 +9,7 @@
     <ul>
     {% for game in games %}
         <li>
-            <img src="{{ game.icon.url }}" height=30 width=30><a href="{% url 'main:game' game.id %}">{{ game.name }}</a><p> - {{ game.description }}</p>
+            <img src="{{ game.icon.url }}" height=30 width=30><a href="{% url 'main:game' game.slug %}">{{ game.name }}</a><p> - {{ game.description }}</p>
         </li>
     {% endfor %}
     </ul>

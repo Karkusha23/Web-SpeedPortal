@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 
 class Game(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50, unique=True)
     steam_link = models.CharField(max_length=100, unique=True)
     icon = models.ImageField(upload_to='games_icons', default='games_icons/default_game_icon.jpg')
     banner = models.ImageField(upload_to='games_banners', default='games_banners/default_game_banner.jpg')
@@ -12,17 +13,29 @@ class Game(models.Model):
         verbose_name = 'game'
         verbose_name_plural = 'games'
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.username)
+        super(Game, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.name
+
+    def get_allowed_categories(self):
+        return AllowedCategory.objects.filter(game=self)
 
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50, unique=True)
     description = models.TextField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'category'
         verbose_name_plural = 'categories'
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.username)
+        super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -31,6 +44,7 @@ class Category(models.Model):
 class AllowedCategory(models.Model):
     game = models.ForeignKey(to=Game, on_delete=models.CASCADE)
     category = models.ForeignKey(to=Category, on_delete=models.CASCADE)
+    extra_description = models.TextField(null=True, blank=True)
 
     class Meta:
         unique_together = (('game', 'category'),)

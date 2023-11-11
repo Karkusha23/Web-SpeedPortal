@@ -15,10 +15,9 @@ def all_games(request):
     }
     return render(request, 'main/allgames.html', context)
 
-def game(request, game_id):
-    game = Game.objects.get(id=game_id)
+def game(request, game_slug):
+    game = Game.objects.get(slug=game_slug)
     context = {
         'game': game,
-        'allowed_categories': AllowedCategory.objects.filter(game=game)
     }
     return render(request, 'main/game.html', context)

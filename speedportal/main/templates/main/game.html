@@ -11,7 +11,7 @@
     <p><a href="{{ game.steam_link }}">Игра в Steam</a></p>
     <h3>Доступные категории:</h3>
     <ul>
-    {% for allowed_category in allowed_categories %}
+    {% for allowed_category in game.get_allowed_categories %}
         <li>
             {{ allowed_category.category.name }}
         </li>
