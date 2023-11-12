@@ -26,6 +26,7 @@ class UserProfileForm(UserChangeForm):
     username = forms.CharField(widget=forms.TextInput(attrs={}))
     pfp = forms.ImageField(widget=forms.FileInput(attrs={}), required=False)
     about = forms.CharField(widget=forms.TextInput(attrs={}), required=False)
+
     class Meta:
         model = User
         fields = ('email', 'username', 'pfp', 'about')

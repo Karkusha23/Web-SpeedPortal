@@ -1,0 +1,27 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+{{ form.errors }}
+<form action="{% url 'main:run_upload' %}" method="post">
+    {% csrf_token %}
+    <p>
+        <label for="{{ form.game.id_for_label }}">Игра</label>
+        {{ form.game }}
+    </p>
+    <p>
+        <label for="{{ form.category.id_for_label }}">Категория</label>
+        {{ form.category }}
+    </p>
+    <p>
+        <label for="{{ form.runtime_ms.id_for_label }}">Время в миллисекундах</label>
+        {{ form.runtime_ms }}
+    </p>
+    <p>
+        <label for="{{ form.video_link.id_for_label }}">Ссылка на видео</label>
+        {{ form.video_link }}
+    </p>
+    <p>
+        <input type="submit">
+    </p>
+</form>
+{% endblock %}

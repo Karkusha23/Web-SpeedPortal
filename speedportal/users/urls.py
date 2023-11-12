@@ -8,7 +8,7 @@ app_name = 'users'
 urlpatterns = [
     path('login/', views.login, name='login'),
     path('registration/', views.registration, name='registration'),
-    path('user-<slug:user_slug>/', views.profile, name='profile'),
+    path('profile/<slug:user_slug>/', views.profile, name='profile'),
     path('profilechange/', views.profile_change, name='profile_change'),
     path('logout/', views.logout, name='logout')
 ]

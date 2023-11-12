@@ -10,6 +10,9 @@
 {% endblock %}
 
 {% block content %}
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
 <h1>Главная страница</h1>
 <p>Текст</p>
 {% endblock %}

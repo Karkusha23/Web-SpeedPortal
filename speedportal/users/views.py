@@ -48,7 +48,7 @@ def profile_change(request):
         form = UserProfileForm(instance=request.user, data=request.POST, files=request.FILES)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('users:profile', kwargs={'user_id': request.user.id}))
+            return HttpResponseRedirect(reverse('users:profile', kwargs={'user_slug': request.user.slug}))
     else:
         form = UserProfileForm(instance=request.user)
     context = {

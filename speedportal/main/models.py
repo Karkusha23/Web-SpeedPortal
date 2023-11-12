@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
+from users.models import User
 
 class Game(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -14,7 +16,7 @@ class Game(models.Model):
         verbose_name_plural = 'games'
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.username)
+        self.slug = slugify(self.name)
         super(Game, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -34,7 +36,7 @@ class Category(models.Model):
         verbose_name_plural = 'categories'
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.username)
+        self.slug = slugify(self.name)
         super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -53,3 +55,18 @@ class AllowedCategory(models.Model):
 
     def __str__(self):
         return self.game.name + ' ' + self.category.name
+
+
+class Run(models.Model):
+    game_category = models.ForeignKey(to=AllowedCategory, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    runtime_ms = models.PositiveIntegerField()
+    video_link = models.CharField(max_length=100)
+    time_upoaded = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name = 'run'
+        verbose_name_plural = 'runs'
+
+    def __str__(self):
+        return __str__(self.game_category) + ' ' + self.runtime_ms
