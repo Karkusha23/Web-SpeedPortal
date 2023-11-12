@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
+from django.utils.text import slugify
 from users.models import User
 
 class Game(models.Model):
@@ -69,4 +70,4 @@ class Run(models.Model):
         verbose_name_plural = 'runs'
 
     def __str__(self):
-        return __str__(self.game_category) + ' ' + self.runtime_ms
+        return self.game_category.__str__() + ' ' + self.runtime_ms.__str__()

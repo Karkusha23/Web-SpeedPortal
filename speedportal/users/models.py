@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy
 from .managers import CustomUserManager
 from django.utils.text import slugify
+import main.models
 
 class User(AbstractBaseUser, PermissionsMixin):
 
@@ -29,3 +30,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+    def get_runs(self):
+        return main.models.Run.objects.filter(user=self).order_by('-time_upoaded')

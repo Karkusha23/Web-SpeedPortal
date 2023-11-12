@@ -5,6 +5,7 @@ from django.urls import reverse
 from users.models import User
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 
+
 def login(request):
     if request.method == 'POST':
         form = UserLoginForm(data=request.POST)
@@ -22,6 +23,7 @@ def login(request):
     }
     return render(request, 'users/login.html', context)
 
+
 def registration(request):
     if request.method == 'POST':
         form = UserRegistrationForm(data=request.POST)
@@ -36,11 +38,13 @@ def registration(request):
     }
     return render(request, 'users/registration.html', context)
 
+
 def profile(request, user_slug):
     context = {
         'user_to_show': User.objects.get(slug=user_slug)
     }
     return render(request, 'users/profile.html', context)
+
 
 @login_required
 def profile_change(request):
@@ -56,6 +60,14 @@ def profile_change(request):
     }
     return render(request, 'users/profilechange.html', context)
 
+
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('main:home'))
+
+
+def user_runs(request, user_slug):
+    context = {
+        'user_to_show': User.objects.get(slug=user_slug)
+    }
+    return render(request, 'main/userruns.html', context)
