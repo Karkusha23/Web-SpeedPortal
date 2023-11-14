@@ -11,6 +11,7 @@ urlpatterns = [
     path('games/', views.all_games, name='all_games'),
     path('games/<slug:game_slug>/', views.game, name='game'),
     path('runupload/', views.run_upload, name='run_upload'),
+    path('run<int:run_id>', views.run, name='run')
 ]
 
 if settings.DEBUG:

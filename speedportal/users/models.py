@@ -4,7 +4,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy
 from .managers import CustomUserManager
 from django.utils.text import slugify
-import main.models
 
 class User(AbstractBaseUser, PermissionsMixin):
 
@@ -29,7 +28,35 @@ class User(AbstractBaseUser, PermissionsMixin):
         super(User, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.email
+        return self.username
 
     def get_runs(self):
-        return main.models.Run.objects.filter(user=self).order_by('-time_upoaded')
+        from main.models import Run
+        return Run.objects.filter(user=self).order_by('-time_uploaded')
+
+    def get_validated_runs(self):
+        from main.models import Run
+        return Run.objects.filter(user=self).filter(is_validated=True).order_by('-time_uploaded')
+
+    def get_rejected_runs(self):
+        from main.models import Run
+        return Run.objects.filter(user=self).filter(is_rejected=True).order_by('-time_uploaded')
+
+
+class Moderator(models.Model):
+    from main.models import Game
+
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    game = models.ForeignKey(to=Game, on_delete=models.CASCADE)
+    can_make_moderators = models.BooleanField(default=False)
+    can_add_categories = models.BooleanField(default=False)
+    can_approve_runs = models.BooleanField(default=False)
+    can_ban = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = (('user', 'game'),)
+        verbose_name = 'moderator'
+        verbose_name_plural = 'moderators'
+
+    def __str__(self):
+        return self.user.__str__() + ': ' + self.game.__str__()

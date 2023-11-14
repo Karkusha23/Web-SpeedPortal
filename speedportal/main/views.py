@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from main.models import Game, Category, AllowedCategory
+from main.models import Game, Category, AllowedCategory, Run
 from main.forms import RunForm
 from users.models import User
 
@@ -42,5 +42,10 @@ def run_upload(request):
     context = {
         'form': form
     }
-    print(form.errors)
     return render(request, 'main/runupload.html', context)
+
+def run(request, run_id):
+    context = {
+        'run': Run.objects.get(id=run_id)
+    }
+    return render(request, 'main/run.html', context)

@@ -1,0 +1,11 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<p><img src="{{ run.game_category.game.banner.url }}" height=100 wigth=640></p>
+<h1>{{ run.game_category.game.name }}: {{ run.game_category.category.name }}</h1>
+<p>{{ run.game_category.extra_description }}</p>
+<p>Итоговое время:</p>
+<ul><li>{{ run.runtime_ms }}</li></ul>
+<p>Пользователь: <a href="{% url 'users:profile' run.user.slug %}">{{ run.user.username }}</a></p>
+<p>Загружен {{ run.time_uploaded }}</p>
+{% endblock %}
