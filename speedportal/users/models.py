@@ -34,6 +34,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         from main.models import Run
         return Run.objects.filter(user=self).order_by('-time_uploaded')
 
+    def get_unseen_runs(self):
+        from main.models import Run
+        return Run.objects.filter(user=self).filter(is_validated=False, is_rejected=False).order_by('-time_uploaded')
+
     def get_validated_runs(self):
         from main.models import Run
         return Run.objects.filter(user=self).filter(is_validated=True).order_by('-time_uploaded')
@@ -41,6 +45,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_rejected_runs(self):
         from main.models import Run
         return Run.objects.filter(user=self).filter(is_rejected=True).order_by('-time_uploaded')
+
+    def get_moderator(self, game):
+        return Moderator.objects.get(user=self, game=game)
 
 
 class Moderator(models.Model):

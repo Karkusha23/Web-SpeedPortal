@@ -75,6 +75,17 @@ class Run(models.Model):
     def __str__(self):
         return self.game_category.__str__() + ' ' + self.runtime_ms.__str__()
 
+    def get_runtime_str(self):
+        hours = self.runtime_ms // 3600000
+        minutes = (self.runtime_ms % 3600000) // 60000
+        seconds = (self.runtime_ms % 60000) // 1000
+        ms = self.runtime_ms % 1000
+        result = ('0' if hours < 10 else '') + str(hours) + ':'
+        result += ('0' if minutes < 10 else '') + str(minutes) + ':'
+        result += ('0' if seconds < 10 else '') + str(seconds) + ':'
+        result += ('0' if ms < 100 else '') + ('0' if ms < 10 else '') + str(ms)
+        return result
+
 
 class Validation(models.Model):
     from users.models import Moderator

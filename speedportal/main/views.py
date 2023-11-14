@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from main.models import Game, Category, AllowedCategory, Run
 from main.forms import RunForm
-from users.models import User
+from users.models import User, Moderator
 
 def index(request):
     return render(request, 'main/index.html')
@@ -45,7 +45,10 @@ def run_upload(request):
     return render(request, 'main/runupload.html', context)
 
 def run(request, run_id):
+    run = Run.objects.get(id=run_id)
+    moderator = Moderator.objects.get(user=request.user, game=run.game_category.game) if Moderator.objects.filter(user=request.user, game=run.game_category.game).exists() else None
     context = {
-        'run': Run.objects.get(id=run_id)
+        'run': run,
+        'moderator': moderator
     }
     return render(request, 'main/run.html', context)

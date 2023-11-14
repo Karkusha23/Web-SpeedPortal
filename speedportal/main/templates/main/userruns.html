@@ -12,7 +12,8 @@
     <tr>
         <td>{{ run.game_category.game.name }}</td>
         <td>{{ run.game_category.category.name }}</td>
-        <td>{{ run.runtime_ms }}</td>
+        <td>{{ run.get_runtime_str }}</td>
+        <td><a href="{% url 'main:run' run.id %}">Перейти</a></td>
     </tr>
     {% endfor %}
 </table>

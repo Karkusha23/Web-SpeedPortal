@@ -9,10 +9,10 @@ class UserRegistrationForm(UserCreationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={
         'placeholder': 'Введите имя пользователя'
     }))
-    password1 = forms.CharField(widget=forms.TextInput(attrs={
+    password1 = forms.CharField(widget=forms.PasswordInput(attrs={
         'placeholder': 'Введите пароль'
     }))
-    password2 = forms.CharField(widget=forms.TextInput(attrs={
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={
         'placeholder': 'Подтведите пароль'
     }))
 
@@ -36,7 +36,7 @@ class UserLoginForm(AuthenticationForm):
     username = forms.EmailField(widget=forms.EmailInput(attrs={
         'placeholder': 'Введите адрес электронной почты'
     }))
-    password = forms.CharField(widget=forms.TextInput(attrs={
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
         'placeholder': 'Введите пароль'
     }))
 

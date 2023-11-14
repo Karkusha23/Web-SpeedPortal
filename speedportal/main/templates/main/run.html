@@ -5,7 +5,9 @@
 <h1>{{ run.game_category.game.name }}: {{ run.game_category.category.name }}</h1>
 <p>{{ run.game_category.extra_description }}</p>
 <p>Итоговое время:</p>
-<ul><li>{{ run.runtime_ms }}</li></ul>
+<ul><li>{{ run.get_runtime_str }}</li></ul>
+<p>Видео:</p>
+<ul><li>{{ run.video_link }}</li></ul>
 <p>Пользователь: <a href="{% url 'users:profile' run.user.slug %}">{{ run.user.username }}</a></p>
 <p>Загружен {{ run.time_uploaded }}</p>
 {% endblock %}

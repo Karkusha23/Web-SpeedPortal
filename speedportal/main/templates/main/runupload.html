@@ -13,8 +13,20 @@
         {{ form.category }}
     </p>
     <p>
-        <label for="{{ form.runtime_ms.id_for_label }}">Время в миллисекундах</label>
-        {{ form.runtime_ms }}
+        <table>
+            <tr>
+                <th><label for="{{ form.runtime_hours.id_for_label }}">Часы</label></th>
+                <th><label for="{{ form.runtime_minutes.id_for_label }}">Минуты</label></th>
+                <th><label for="{{ form.runtime_seconds.id_for_label }}">Секунды</label></th>
+                <th><label for="{{ form.runtime_ms.id_for_label }}">Миллисекунды</label></th>
+            </tr>
+            <tr>
+                <td>{{ form.runtime_hours }}</td>
+                <td>{{ form.runtime_minutes }}</td>
+                <td>{{ form.runtime_seconds }}</td>
+                <td>{{ form.runtime_ms }}</td>
+            </tr>
+        </table>
     </p>
     <p>
         <label for="{{ form.video_link.id_for_label }}">Ссылка на видео</label>
