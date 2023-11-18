@@ -61,3 +61,14 @@ def run(request, run_id):
         'form': form
     }
     return render(request, 'main/run.html', context)
+
+@login_required
+def moderation(request):
+    moderators = request.user.get_moderators()
+    if not moderators.exists():
+        messages.error(request, 'Вы не являетесь модератором!')
+        return HttpResponseRedirect(reverse('main:home'))
+    context = {
+        'moderators': moderators
+    }
+    return render(request, 'main/moderation.html', context)

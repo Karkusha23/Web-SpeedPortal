@@ -46,8 +46,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         from main.models import Run
         return Run.objects.filter(user=self).filter(is_rejected=True).order_by('-time_uploaded')
 
-    def get_moderator(self, game):
-        return Moderator.objects.get(user=self, game=game)
+    def is_moderator(self):
+        return Moderator.objects.filter(user=self).exists()
+
+    def get_moderators(self):
+        return Moderator.objects.filter(user=self)
 
 
 class Moderator(models.Model):
@@ -57,7 +60,7 @@ class Moderator(models.Model):
     game = models.ForeignKey(to=Game, on_delete=models.CASCADE)
     can_make_moderators = models.BooleanField(default=False)
     can_add_categories = models.BooleanField(default=False)
-    can_approve_runs = models.BooleanField(default=False)
+    can_validate_runs = models.BooleanField(default=False)
     can_ban = models.BooleanField(default=False)
 
     class Meta:
@@ -67,3 +70,7 @@ class Moderator(models.Model):
 
     def __str__(self):
         return self.user.__str__() + ': ' + self.game.__str__()
+
+    def get_unseen_runs(self):
+        from main.models import Run
+        return Run.objects.filter(game_category__game=self.game, is_validated=False, is_rejected=False).exclude(user=self.user).order_by('time_uploaded')

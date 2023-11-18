@@ -73,7 +73,7 @@ class Run(models.Model):
         verbose_name_plural = 'runs'
 
     def __str__(self):
-        return self.game_category.__str__() + ' ' + self.runtime_ms.__str__()
+        return self.game_category.__str__() + ' ' + self.get_runtime_str()
 
     def get_runtime_str(self):
         hours = self.runtime_ms // 3600000
@@ -86,12 +86,30 @@ class Run(models.Model):
         result += ('0' if ms < 100 else '') + ('0' if ms < 10 else '') + str(ms)
         return result
 
+    @staticmethod
+    def get_leaderboard(game_category):
+        return Run.objects.raw(f'SELECT * FROM ( '
+                               f'SELECT DISTINCT ON (user_id) * FROM main_run '
+                               f'WHERE game_category_id = {game_category.id} '
+                               f'ORDER BY user_id, runtime_ms ASC '
+                               f') ORDER BY runtime_ms ASC')
+
+    def get_place(self):
+        return Run.objects.raw(f'SELECT 1 AS id, COUNT(*) FROM ( '
+                               f'SELECT DISTINCT ON (user_id) * FROM main_run '
+                               f'WHERE game_category_id = {self.game_category.id} AND runtime_ms < {self.runtime_ms} '
+                               f'ORDER BY user_id, runtime_ms ASC) ')[0].count + 1
+
+    def get_points_for_run(self):
+        return max(10, 100 - self.get_place())
+
 
 class Validation(models.Model):
     from users.models import Moderator
 
     run = models.OneToOneField(to=Run, on_delete=models.CASCADE, primary_key=True)
     moderator = models.ForeignKey(to=Moderator, on_delete=models.SET_NULL, null=True)
+    points = models.PositiveIntegerField(default=0)
     time = models.DateTimeField(default=timezone.now)
 
     class Meta:

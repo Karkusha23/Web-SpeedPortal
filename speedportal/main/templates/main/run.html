@@ -17,7 +17,7 @@
 <ul><li>{{ run.video_link }}</li></ul>
 <p>Пользователь: <a href="{% url 'users:profile' run.user.slug %}">{{ run.user.username }}</a></p>
 <p>Загружен {{ run.time_uploaded }}</p>
-{% if moderator %}
+{% if moderator and moderator.can_validate_runs and run.user.id != user.id %}
 <form action="{% url 'main:run' run.id %}" method="post">
     {% csrf_token %}
     <p>

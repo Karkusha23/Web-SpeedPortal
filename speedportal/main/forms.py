@@ -1,5 +1,6 @@
 from django import forms
 from main.models import Game, Category, AllowedCategory, Run, Validation, Rejection
+from users.models import User
 
 class RunForm(forms.Form):
     game = forms.ModelChoiceField(queryset=Game.objects.all().order_by('name'), required=True)
@@ -66,10 +67,13 @@ class ValidationForm(forms.Form):
     }))
 
     def save(self, run, moderator):
-        print(self.data['validate_choice'])
-        if self.data['validate_choice'] == 1:
+        if self.data['validate_choice'] == '1':
             run.is_validated = True
-            Validation.objects.create(run=run, moderator=moderator)
+            points = run.get_points_for_run()
+            user = User.objects.get(id=run.user_id)
+            user.points += points
+            user.save()
+            Validation.objects.create(run=run, moderator=moderator, points=points)
         else:
             run.is_rejected = True
             Rejection.objects.create(run=run, moderator=moderator, reason=self.data['reject_reason'])

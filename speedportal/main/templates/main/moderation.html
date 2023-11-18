@@ -1,0 +1,28 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<h1>Ваша страница модератора</h1>
+<h2>Забеги, ожидающие валидации</h2>
+{% for moderator in moderators %}
+<h3>{{ moderator.game }}</h3>
+{% if not moderator.get_unseen_runs.exists %}
+<p>Нет данных для отображения</p>
+{% else %}
+<table>
+    <tr>
+        <th>Пользователь</th>
+        <th>Категория</th>
+        <th>Время</th>
+    </tr>
+    {% for run in moderator.get_unseen_runs %}
+    <tr>
+        <td>{{ run.user.username }}</td>
+        <td>{{ run.game_category.category.name }}</td>
+        <td>{{ run.get_runtime_str }}</td>
+        <td><a href="{% url 'main:run' run.id %}">Перейти</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endfor %}
+{% endblock %}
