@@ -4,10 +4,33 @@
 <p><img src="{{ run.game_category.game.banner.url }}" height=100 wigth=640></p>
 <h1>{{ run.game_category.game.name }}: {{ run.game_category.category.name }}</h1>
 <p>{{ run.game_category.extra_description }}</p>
+{% if not run.is_validated %}
+{% if run.is_rejected %}
+<p><b>Этот забег отклонен модератором!</b></p>
+{% else %}
+<p><i>Этот забег требует подтверждения!</i></p>
+{% endif %}
+{% endif %}
 <p>Итоговое время:</p>
 <ul><li>{{ run.get_runtime_str }}</li></ul>
 <p>Видео:</p>
 <ul><li>{{ run.video_link }}</li></ul>
 <p>Пользователь: <a href="{% url 'users:profile' run.user.slug %}">{{ run.user.username }}</a></p>
 <p>Загружен {{ run.time_uploaded }}</p>
+{% if moderator %}
+<form action="{% url 'main:run' run.id %}" method="post">
+    {% csrf_token %}
+    <p>
+        <label for="{{ form.validate_choice.id_for_label }}">Принять/Отклонить забег?</label>
+        {{ form.validate_choice }}
+    </p>
+    <p>
+        <label for="{{ form.reject_reason.id_for_label }}">Укажите причину отклонения</label>
+        {{ form.reject_reason }}
+    </p>
+    <p>
+       <input type="submit">
+    </p>
+</form>
+{% endif %}
 {% endblock %}

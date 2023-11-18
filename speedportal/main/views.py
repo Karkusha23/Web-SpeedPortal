@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from main.models import Game, Category, AllowedCategory, Run
-from main.forms import RunForm
+from main.forms import RunForm, ValidationForm
 from users.models import User, Moderator
 
 def index(request):
@@ -46,9 +46,18 @@ def run_upload(request):
 
 def run(request, run_id):
     run = Run.objects.get(id=run_id)
-    moderator = Moderator.objects.get(user=request.user, game=run.game_category.game) if Moderator.objects.filter(user=request.user, game=run.game_category.game).exists() else None
+    moderator = Moderator.objects.filter(user=request.user, game=run.game_category.game) if request.user.is_authenticated and not run.is_validated and not run.is_rejected else None
+    moderator = moderator.first() if moderator else None
+    if request.method == 'POST':
+        form = ValidationForm(data=request.POST)
+        if form.is_valid():
+            form.save(run, moderator)
+            return HttpResponseRedirect(reverse('main:run', kwargs={'run_id': run.id}))
+    else:
+        form = ValidationForm()
     context = {
         'run': run,
-        'moderator': moderator
+        'moderator': moderator,
+        'form': form
     }
     return render(request, 'main/run.html', context)

@@ -111,8 +111,8 @@ class Rejection(models.Model):
     time = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        verbose_name = 'refuse'
-        verbose_name_plural = 'refuses'
+        verbose_name = 'rejection'
+        verbose_name_plural = 'rejections'
 
     def __str__(self):
         return self.run.__str__()

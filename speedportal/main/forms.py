@@ -59,9 +59,9 @@ class RunForm(forms.Form):
                            user=user, runtime_ms=self.get_runtime_ms(), video_link=self.data['video_link'])
 
 
-class ValidateForm(forms.Form):
+class ValidationForm(forms.Form):
     validate_choice = forms.ChoiceField(choices=((1, 'Принять'), (2, 'Отклонить')), required=True)
-    refuse_reason = forms.CharField(required=True, widget=forms.TextInput(attrs={
+    reject_reason = forms.CharField(required=True, widget=forms.TextInput(attrs={
         'placeholder': 'Укажите причину отклонения забега'
     }))
 
@@ -72,5 +72,5 @@ class ValidateForm(forms.Form):
             Validation.objects.create(run=run, moderator=moderator)
         else:
             run.is_rejected = True
-            Rejection.objects.create(run=run, moderator=moderator, reason=refuse_reason)
+            Rejection.objects.create(run=run, moderator=moderator, reason=self.data['reject_reason'])
         run.save()
