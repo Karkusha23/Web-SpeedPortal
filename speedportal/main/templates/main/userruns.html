@@ -1,5 +1,7 @@
 {% extends 'main/base.html' %}
 
+{% block title %}Забеги пользователя {{ user.username }}{% endblock %}
+
 {% block content %}
 <h1>{% if user.id == user_to_show.id %}Ваши раны{% else %}Раны пользователя {{ user_to_show.username }}{% endif %}</h1>
 <table>

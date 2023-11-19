@@ -1,0 +1,20 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ game_category.game.name }} {{ game_category.category.name }}{% endblock %}
+
+{% block content %}
+<h1></h1>
+<table>
+    <tr>
+        <th>Время</th>
+        <th>Пользователь</th>
+    </tr>
+    {% for run in game_category.get_leaderboard %}
+    <tr>
+        <td>{{ run.get_runtime_str }}</td>
+        <td><img src="{{ run.user.pfp.url }}" height=20 width=20><a href="{% url 'users:profile' run.user.slug %}">{{ run.user.username }}</a></td>
+        <td><a href="{% url 'main:run' run.id %}">Перейти</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

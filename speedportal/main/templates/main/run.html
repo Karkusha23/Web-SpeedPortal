@@ -1,5 +1,7 @@
 {% extends 'main/base.html' %}
 
+{% block title %}{{ run.game_category.game.name }} {{ run.game_category.category.name }}{% endblock %}
+
 {% block content %}
 <p><img src="{{ run.game_category.game.banner.url }}" height=100 wigth=640></p>
 <h1>{{ run.game_category.game.name }}: {{ run.game_category.category.name }}</h1>

@@ -56,6 +56,13 @@ class AllowedCategory(models.Model):
     def __str__(self):
         return self.game.name + ' ' + self.category.name
 
+    def get_leaderboard(self):
+        return Run.objects.raw(f'SELECT * FROM ( '
+                               f'SELECT DISTINCT ON (user_id) * FROM main_run '
+                               f'WHERE game_category_id = {self.id} '
+                               f'ORDER BY user_id, runtime_ms ASC '
+                               f') ORDER BY runtime_ms ASC')
+
 
 class Run(models.Model):
     from users.models import User
@@ -85,14 +92,6 @@ class Run(models.Model):
         result += ('0' if seconds < 10 else '') + str(seconds) + ':'
         result += ('0' if ms < 100 else '') + ('0' if ms < 10 else '') + str(ms)
         return result
-
-    @staticmethod
-    def get_leaderboard(game_category):
-        return Run.objects.raw(f'SELECT * FROM ( '
-                               f'SELECT DISTINCT ON (user_id) * FROM main_run '
-                               f'WHERE game_category_id = {game_category.id} '
-                               f'ORDER BY user_id, runtime_ms ASC '
-                               f') ORDER BY runtime_ms ASC')
 
     def get_place(self):
         return Run.objects.raw(f'SELECT 1 AS id, COUNT(*) FROM ( '

@@ -44,6 +44,7 @@ def run_upload(request):
     }
     return render(request, 'main/runupload.html', context)
 
+
 def run(request, run_id):
     run = Run.objects.get(id=run_id)
     moderator = Moderator.objects.filter(user=request.user, game=run.game_category.game) if request.user.is_authenticated and not run.is_validated and not run.is_rejected else None
@@ -62,6 +63,7 @@ def run(request, run_id):
     }
     return render(request, 'main/run.html', context)
 
+
 @login_required
 def moderation(request):
     moderators = request.user.get_moderators()
@@ -72,3 +74,17 @@ def moderation(request):
         'moderators': moderators
     }
     return render(request, 'main/moderation.html', context)
+
+
+def leaderboard(request, game_slug, category_slug):
+    game = Game.objects.get(slug=game_slug)
+    category = Category.objects.get(slug=category_slug)
+    game_category = AllowedCategory.objects.filter(game=game, category=category)
+    if not game_category.exists():
+        messages.error(request, 'Эта категория недоступна для этой игры!')
+        return HttpResponseRedirect(reverse('main:home'))
+    game_category = game_category.first()
+    context = {
+        'game_category': game_category
+    }
+    return render(request, 'main/leaderboard.html', context)
