@@ -67,3 +67,5 @@ SpeedPortal - веб-платформа для размещения и прос�
 PostgreSQL
 ## Структура БД
 https://lucid.app/lucidchart/3beae458-0ca5-4f42-a3f4-27d3898f9cbf/edit?invitationId=inv_a228f947-7b3c-4cc9-b814-717159d768d9
+![Dbtest](https://github.com/Karkusha23/Web_SpeedPortal/assets/16138259/390d72c1-ebc9-425f-a363-05ac96cd0a8d)
+
