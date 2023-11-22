@@ -3,7 +3,10 @@
 {% block title %}{{ game_category.game.name }} {{ game_category.category.name }}{% endblock %}
 
 {% block content %}
-<h1></h1>
+<h3>Таблица лидеров по {{ game_category.game.name }} в категории {{ game_category.category.name }}</h3>
+{% if not game_category.get_leaderboard %}
+<p>В этой категории пока нет забегов</p>
+{% else %}
 <table>
     <tr>
         <th>Время</th>
@@ -17,4 +20,5 @@
     </tr>
     {% endfor %}
 </table>
+{% endif %}
 {% endblock %}

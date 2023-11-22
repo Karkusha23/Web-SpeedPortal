@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from main.models import Game, Category, AllowedCategory, Run
-from main.forms import RunForm, ValidationForm
+from main.forms import RunForm, ValidationForm, CommentForm, ReportForm
 from users.models import User, Moderator
 
 def index(request):
@@ -50,16 +50,29 @@ def run(request, run_id):
     moderator = Moderator.objects.filter(user=request.user, game=run.game_category.game) if request.user.is_authenticated and not run.is_validated and not run.is_rejected else None
     moderator = moderator.first() if moderator else None
     if request.method == 'POST':
-        form = ValidationForm(data=request.POST)
-        if form.is_valid():
-            form.save(run, moderator)
+        validation_form = ValidationForm(data=request.POST)
+        comment_form = CommentForm(data=request.POST)
+        report_form = ReportForm(data=request.POST)
+        if validation_form.is_valid():
+            validation_form.save(run, moderator)
+            return HttpResponseRedirect(reverse('main:run', kwargs={'run_id': run.id}))
+        elif comment_form.is_valid():
+            comment_form.save(run, request.user)
+            return HttpResponseRedirect(reverse('main:run', kwargs={'run_id': run.id}))
+        elif report_form.is_valid():
+            report_form.save(run, request.user)
+            messages.success(request, 'Вы успешно отправили жалобу. Модераторы в ближайшее время ее рассмотрят')
             return HttpResponseRedirect(reverse('main:run', kwargs={'run_id': run.id}))
     else:
-        form = ValidationForm()
+        validation_form = ValidationForm()
+        comment_form = CommentForm()
+        report_form = ReportForm()
     context = {
         'run': run,
         'moderator': moderator,
-        'form': form
+        'validation_form': validation_form,
+        'comment_form': comment_form,
+        'report_form': report_form
     }
     return render(request, 'main/run.html', context)
 

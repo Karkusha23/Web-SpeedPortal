@@ -59,7 +59,7 @@ class AllowedCategory(models.Model):
     def get_leaderboard(self):
         return Run.objects.raw(f'SELECT * FROM ( '
                                f'SELECT DISTINCT ON (user_id) * FROM main_run '
-                               f'WHERE game_category_id = {self.id} '
+                               f'WHERE game_category_id = {self.id} AND is_validated '
                                f'ORDER BY user_id, runtime_ms ASC '
                                f') ORDER BY runtime_ms ASC')
 
@@ -96,11 +96,14 @@ class Run(models.Model):
     def get_place(self):
         return Run.objects.raw(f'SELECT 1 AS id, COUNT(*) FROM ( '
                                f'SELECT DISTINCT ON (user_id) * FROM main_run '
-                               f'WHERE game_category_id = {self.game_category.id} AND runtime_ms < {self.runtime_ms} '
-                               f'ORDER BY user_id, runtime_ms ASC) ')[0].count + 1
+                               f'WHERE game_category_id = {self.game_category.id} AND runtime_ms < {self.runtime_ms} AND is_validated '
+                               f'ORDER BY user_id ASC) ')[0].count + 1
 
     def get_points_for_run(self):
         return max(10, 100 - self.get_place())
+
+    def get_comments(self):
+        return Comment.objects.filter(run=self).order_by('-time')
 
 
 class Validation(models.Model):
@@ -135,14 +138,33 @@ class Rejection(models.Model):
         return self.run.__str__()
 
 
-#def get_run_validation():
-#    return Run.objects.raw('select main_run.id, main_run.runtime_ms, main_run.time_uploaded, main_run.user_id, '
-#                           'main_game.name as game_name, main_category.name as category_name, '
-#                           'main_validation.run_id as validated, main_refuse.run_id as refused '
-#                           'from main_run '
-#                           'left join main_allowedcategory on main_run.game_category_id = main_allowedcategory.id '
-#                           'left join main_game on main_allowedcategory.game_id = main_game.id '
-#                           'left join main_category on main_allowedcategory.category_id = main_category.id '
-#                           'left join main_validation on main_run.id = main_validation.run_id '
-#                           'left join main_refuse on main_run.id = main_refuse.run_id '
-#                           'order by main_run.time_uploaded desc')
+class Comment(models.Model):
+    from users.models import User
+
+    run = models.ForeignKey(to=Run, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
+    comment_text = models.TextField()
+    time = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name = 'comment'
+        verbose_name_plural = 'comments'
+
+    def __str__(self):
+        return self.run.__str__()
+
+
+class Report(models.Model):
+    from users.models import User
+
+    run = models.ForeignKey(to=Run, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
+    report_text = models.TextField()
+    time = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name = 'report'
+        verbose_name_plural = 'reports'
+
+    def __str__(self):
+        return self.run.__str__()

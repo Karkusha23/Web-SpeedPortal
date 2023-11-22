@@ -10,9 +10,6 @@
 {% endblock %}
 
 {% block content %}
-{% for message in messages %}
-    <p>{{ message }}</p>
-{% endfor %}
 <h1>Главная страница</h1>
 <p>Вы можете <a href="{% url 'main:run_upload' %}">загрузить свой ран</a></p>
 {% endblock %}

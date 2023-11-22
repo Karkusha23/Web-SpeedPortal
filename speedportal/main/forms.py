@@ -1,5 +1,5 @@
 from django import forms
-from main.models import Game, Category, AllowedCategory, Run, Validation, Rejection
+from main.models import Game, Category, AllowedCategory, Run, Validation, Rejection, Comment, Report
 from users.models import User
 
 class RunForm(forms.Form):
@@ -78,3 +78,21 @@ class ValidationForm(forms.Form):
             run.is_rejected = True
             Rejection.objects.create(run=run, moderator=moderator, reason=self.data['reject_reason'])
         run.save()
+
+
+class CommentForm(forms.Form):
+    comment_text = forms.CharField(required=True, widget=forms.TextInput(attrs={
+        'placeholder': 'Напишите комментарий'
+    }))
+
+    def save(self, run, user):
+        Comment.objects.create(run=run, user=user, comment_text=self.data['comment_text'])
+
+
+class ReportForm(forms.Form):
+    report_text = forms.CharField(required=True, widget=forms.TextInput(attrs={
+        'placeholder': 'Укажите причину жалобы'
+    }))
+
+    def save(self, run, user):
+        Report.objects.create(run=run, user=user, report_text=self.data['report_text'])
