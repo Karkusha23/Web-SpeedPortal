@@ -2,6 +2,14 @@
 
 {% block title %}Модерация{% endblock %}
 
+{% load static %}
+{% block styles %}{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'text_show.js' %}"></script>
+<script src="{% static 'mouse_popup.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <h1>Ваша страница модератора</h1>
 <h2>Забеги, ожидающие валидации</h2>
@@ -10,21 +18,26 @@
 {% if not moderator.get_unseen_runs.exists %}
 <p>Нет данных для отображения</p>
 {% else %}
-<table>
-    <tr>
-        <th>Пользователь</th>
-        <th>Категория</th>
-        <th>Время</th>
-    </tr>
-    {% for run in moderator.get_unseen_runs %}
-    <tr>
-        <td>{{ run.user.username }}</td>
-        <td>{{ run.game_category.category.name }}</td>
-        <td>{{ run.get_runtime_str }}</td>
-        <td><a href="{% url 'main:run' run.id %}">Перейти</a></td>
-    </tr>
-    {% endfor %}
-</table>
+<p>Раны: {{ moderator.get_unseen_runs.count }}</p>
+<a href="#" id="extend{{ moderator.id }}" onclick="show_text('table{{ moderator.id }}', 'extend{{ moderator.id }}')">+ Развернуть</a>
+<div id="table{{ moderator.id }}" hidden="true">
+    <a href="#" onclick="show_text('extend{{ moderator.id }}', 'table{{ moderator.id }}')">- Свернуть</a>
+    <table>
+        <tr>
+            <th>Пользователь</th>
+            <th>Категория</th>
+            <th>Время</th>
+        </tr>
+        {% for run in moderator.get_unseen_runs %}
+        <tr onmouseover="show_mouse_popup('{{ run.user.username }} {{ run.id }}')" onmouseout="hid_mouse_popup()">
+            <td>{{ run.user.username }}</td>
+            <td>{{ run.game_category.category.name }}</td>
+            <td>{{ run.get_runtime_str }}</td>
+            <td><a href="{% url 'main:run' run.id %}">Перейти</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 {% endif %}
 {% endfor %}
 {% endblock %}

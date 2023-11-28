@@ -1,0 +1,19 @@
+.mouse_popup {
+    position: absolute;
+    z-index: 10;
+    padding: 15px;
+    border: 2px dashed #333;
+    border-radius: 4px;
+    color: #333;
+    background: #fff;
+}
+
+.static_popup {
+    position: absolute;
+    z-index: 10;
+    padding: 15px;
+    border: 2px dashed #333;
+    border-radius: 4px;
+    color: #333;
+    background: #fff;
+}

@@ -6,14 +6,19 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}{% endblock %} - SpeedPortal</title>
+    {% load static %}
+    <link href="{% static 'style_popup.css' %}", rel="stylesheet">
     {% block styles %}{% endblock %}
 
 </head>
 <body>
+    <script src="{% static 'static_popup.js' %}"></script>
+    {% block scripts %}{% endblock %}
     <a href="{% url 'main:home' %}">Главная</a>
     <a href="{% url 'main:about' %}">О нас</a>
     <a href="{% url 'main:all_games' %}">Все игры</a>
     {% if user.is_authenticated %}
+    <img scr="{{ user.pfp.url }}" height=30 width=30 data-popup="123">
     <a href="{% url 'users:profile' user.slug %}">Профиль</a>
     {% if user.is_moderator %}
     <a href="{% url 'main:moderation' %}">Модерация</a>
