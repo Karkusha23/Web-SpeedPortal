@@ -29,10 +29,10 @@
             <th>Время</th>
         </tr>
         {% for run in moderator.get_unseen_runs %}
-        <tr onmouseover="show_mouse_popup('{{ run.user.username }} {{ run.id }}')" onmouseout="hid_mouse_popup()">
-            <td>{{ run.user.username }}</td>
-            <td>{{ run.game_category.category.name }}</td>
-            <td>{{ run.get_runtime_str }}</td>
+        <tr>
+            <td data-mousepopup="{% include 'main/userpopup.html' with user=run.user %}">{{ run.user.username }}</td>
+            <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.game_category.category.name }}</td>
+            <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.get_runtime_str }}</td>
             <td><a href="{% url 'main:run' run.id %}">Перейти</a></td>
         </tr>
         {% endfor %}

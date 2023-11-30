@@ -1,14 +1,27 @@
 let mousePopupElem;
 
-document.addEventListener('mousemove', event => {
-    if (!mousePopupElem || !event.target)
+document.addEventListener('mouseover', e => {
+    let popupHTML = e.target.dataset.mousepopup;
+    if (!popupHTML)
     {
         return;
     }
-    let x = event.x + 10;
-    let y = event.y + 10;
+    show_mouse_popup(popupHTML)
+});
+
+document.addEventListener('mousemove', e => {
+    if (!mousePopupElem || !e.target)
+    {
+        return;
+    }
+    let x = e.x + 10;
+    let y = e.y + 10;
     mousePopupElem.style.left = x + 'px';
     mousePopupElem.style.top = y + 'px';
+});
+
+document.addEventListener('mouseout', e => {
+    hid_mouse_popup()
 });
 
 function show_mouse_popup(text)

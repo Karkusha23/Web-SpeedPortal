@@ -18,7 +18,7 @@
     <a href="{% url 'main:about' %}">О нас</a>
     <a href="{% url 'main:all_games' %}">Все игры</a>
     {% if user.is_authenticated %}
-    <img scr="{{ user.pfp.url }}" height=30 width=30 data-popup="123">
+    <img scr="{{ user.pfp.url }}" height=30 width=30 data-staticpopup="123">
     <a href="{% url 'users:profile' user.slug %}">Профиль</a>
     {% if user.is_moderator %}
     <a href="{% url 'main:moderation' %}">Модерация</a>

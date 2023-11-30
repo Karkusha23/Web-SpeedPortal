@@ -6,7 +6,7 @@ document.addEventListener('mouseover', e => {
         return;
     }
     let target = e.target;
-    let popupHTML = target.dataset.popup;
+    let popupHTML = target.dataset.staticpopup;
     if (!popupHTML)
     {
         return;

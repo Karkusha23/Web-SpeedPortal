@@ -1,0 +1,12 @@
+<p><img src=&quot;{{ run.game_category.game.banner.url }}&quot; height=&quot;40&quot; width=&quot;256&quot;></p>
+{% if not run.is_validated and not run.is_rejected %}
+<p><i>Этот забег требует подтверждения!</i></p>
+{% elif run.is_rejected %}
+<p><b>Внимание! Этот забег отклонен модераторами!</b></p>
+{% endif %}
+<h5>{{ run.game_category.game.name }} в категории {{ run.game_category.category.name }}</h5>
+<p>Время: {{ run.get_runtime_str }}</p>
+<p>Выполнен: {{ run.user.username }}</p>
+{% if run.is_validated %}
+<p>Комментарии: {{ run.get_comments.count }}</p>
+{% endif %}
