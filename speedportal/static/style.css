@@ -1,3 +1,4 @@
-p {
-    color : red;
+.spread {
+  display: flex;
+  justify-content: space-between;
 }

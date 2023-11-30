@@ -1,0 +1,10 @@
+{% if user.is_authenticated %}
+<p align=&quot;right&quot;><a href=&quot;{% url 'users:profile' user.slug %}&quot;>Профиль</a></p>
+{% if user.is_moderator %}
+<p align=&quot;right&quot;><a href=&quot;{% url 'main:moderation' %}&quot;>Модерация</a></p>
+{% endif %}
+<p align=&quot;right&quot;><a href=&quot;{% url 'users:logout' %}&quot;>Выйти</a></p>
+{% else %}
+<p align=&quot;right&quot;><a href=&quot;{% url 'users:login' %}&quot;>Войти</a></p>
+<p align=&quot;right&quot;><a href=&quot;{% url 'users:registration' %}&quot;>Зарегистрироваться</a></p>
+{% endif %}
