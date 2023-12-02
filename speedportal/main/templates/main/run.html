@@ -2,6 +2,13 @@
 
 {% block title %}{{ run.game_category.game.name }} {{ run.game_category.category.name }}{% endblock %}
 
+{% load static %}
+{% block scripts %}
+<script src="{% static 'mouse_popup.js' %}"></script>
+<script src="{% static 'validation_form_dynamic.js' %}"></script>
+<script src="{% static 'single_input_dynamic.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <p><img src="{{ run.game_category.game.banner.url }}" height=100 wigth=640></p>
 <h1>{{ run.game_category.game.name }}: {{ run.game_category.category.name }}</h1>
@@ -17,7 +24,7 @@
 <ul><li>{{ run.get_runtime_str }}</li></ul>
 <p>Видео:</p>
 <ul><li>{{ run.video_link }}</li></ul>
-<p>Пользователь: <a href="{% url 'users:profile' run.user.slug %}">{{ run.user.username }}</a></p>
+<p>Пользователь: <span data-mousepopup="{% include 'main/userpopup.html' with user=run.user %}" onclick="location.href='{% url 'users:profile' run.user.slug %}'">{{ run.user.username }}</span></p>
 <p>Загружен {{ run.time_uploaded }}</p>
 {% if moderator and moderator.can_validate_runs and run.user.id != user.id %}
 <form action="{% url 'main:run' run.id %}" method="post">
@@ -26,11 +33,11 @@
         <label for="{{ validation_form.validate_choice.id_for_label }}">Принять/Отклонить забег?</label>
         {{ validation_form.validate_choice }}
     </p>
-    <p>
+    <p id="reject_reason_p" hidden="true">
         <label for="{{ validation_form.reject_reason.id_for_label }}">Укажите причину отклонения</label>
         {{ validation_form.reject_reason }}
     </p>
-    <p>
+    <p id="submit_validation_id" hidden="true">
        <input type="submit">
     </p>
 </form>
@@ -39,21 +46,21 @@
 {% if user.is_authenticated %}
 <form action="{% url 'main:run' run.id %}" method="post">
     {% csrf_token %}
-    <p>
-        <label for="{{ report_form.validate_choice.id_for_label }}">Вы можете пожаловаться на забег</label>
+    <p id="report_id" data-idsubmit="submit_report_id">
+        <label for="{{ report_form.report_text.id_for_label }}">Вы можете пожаловаться на забег</label>
         {{ report_form.report_text }}
     </p>
-    <p>
+    <p id="submit_report_id" hidden="true">
        <input type="submit">
     </p>
 </form>
 <form action="{% url 'main:run' run.id %}" method="post">
     {% csrf_token %}
-    <p>
+    <p id="comment_id" data-idsubmit="submit_comment_id">
         <label for="{{ comment_form.comment_text.id_for_label }}">Оставьте комментарий</label>
         {{ comment_form.comment_text }}
     </p>
-    <p>
+    <p id="submit_comment_id" hidden="true">
        <input type="submit">
     </p>
 </form>

@@ -13,8 +13,6 @@
 
 </head>
 <body>
-    <script src="{% static 'static_popup.js' %}"></script>
-    {% block scripts %}{% endblock %}
     <div class="spread">
         <span><a href="{% url 'main:home' %}">Главная</a> <a href="{% url 'main:about' %}">О нас</a> <a href="{% url 'main:all_games' %}">Все игры</a></span>
         {% if user.is_authenticated %}
@@ -27,5 +25,7 @@
         <p>{{ message }}</p>
     {% endfor %}
     {% block content %}{% endblock %}
+    <script src="{% static 'static_popup.js' %}"></script>
+    {% block scripts %}{% endblock %}
 </body>
 </html>

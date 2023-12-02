@@ -61,7 +61,7 @@ class RunForm(forms.Form):
 
 
 class ValidationForm(forms.Form):
-    validate_choice = forms.ChoiceField(choices=((1, 'Принять'), (2, 'Отклонить')), required=True)
+    validate_choice = forms.ChoiceField(choices=((0, '------'),(1, 'Принять'), (2, 'Отклонить')), required=True)
     reject_reason = forms.CharField(required=True, widget=forms.TextInput(attrs={
         'placeholder': 'Укажите причину отклонения забега'
     }))
@@ -74,7 +74,7 @@ class ValidationForm(forms.Form):
             user.points += points
             user.save()
             Validation.objects.create(run=run, moderator=moderator, points=points)
-        else:
+        elif self.data['validate_choice'] == '2':
             run.is_rejected = True
             Rejection.objects.create(run=run, moderator=moderator, reason=self.data['reject_reason'])
         run.save()

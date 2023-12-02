@@ -1,5 +1,5 @@
 from django.contrib import admin
-from main.models import Game, Category, AllowedCategory, Run, Validation, Rejection
+from main.models import Game, Category, AllowedCategory, Run, Validation, Rejection, Comment, Report
 
 class GameAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
@@ -15,3 +15,5 @@ admin.site.register(AllowedCategory)
 admin.site.register(Run)
 admin.site.register(Validation)
 admin.site.register(Rejection)
+admin.site.register(Comment)
+admin.site.register(Report)
