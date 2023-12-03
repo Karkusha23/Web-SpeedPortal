@@ -74,3 +74,7 @@ class Moderator(models.Model):
     def get_unseen_runs(self):
         from main.models import Run
         return Run.objects.filter(game_category__game=self.game, is_validated=False, is_rejected=False).exclude(user=self.user).order_by('time_uploaded')
+
+    def get_reports(self):
+        from main.models import Report
+        return Report.objects.filter(run__game_category__game=self.game)

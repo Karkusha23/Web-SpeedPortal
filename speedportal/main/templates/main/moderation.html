@@ -12,12 +12,13 @@
 
 {% block content %}
 <h1>Ваша страница модератора</h1>
-<h2>Забеги, ожидающие валидации</h2>
+<h2>Забеги, ожидающие валидации, и жалобы</h2>
 {% for moderator in moderators %}
 <h3>{{ moderator.game }}</h3>
-{% if not moderator.get_unseen_runs.exists %}
+{% if not moderator.get_unseen_runs.exists and not moderator.get_reports.exists %}
 <p>Нет данных для отображения</p>
 {% else %}
+{% if moderator.get_unseen_runs.exists %}
 <p>Раны: {{ moderator.get_unseen_runs.count }}</p>
 <a href="#" id="extend{{ moderator.id }}" onclick="show_text('table{{ moderator.id }}', 'extend{{ moderator.id }}')">+ Развернуть</a>
 <div id="table{{ moderator.id }}" hidden="true">
@@ -30,7 +31,7 @@
         </tr>
         {% for run in moderator.get_unseen_runs %}
         <tr>
-            <td data-mousepopup="{% include 'main/userpopup.html' with user=run.user %}">{{ run.user.username }}</td>
+            <td data-mousepopup="{% include 'main/userpopup.html' with user=run.user %}" onclick="location.href='{% url 'users:profile' run.user.slug %}'">{{ run.user.username }}</td>
             <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.game_category.category.name }}</td>
             <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.get_runtime_str }}</td>
             <td><a href="{% url 'main:run' run.id %}">Перейти</a></td>
@@ -38,6 +39,33 @@
         {% endfor %}
     </table>
 </div>
+{% endif %}
+{% if moderator.get_reports.exists %}
+<p>Жалобы: {{ moderator.get_reports.count }}</p>
+<a href="#" id="report_extend{{ moderator.id }}" onclick="show_text('reports{{ moderator.id }}', 'report_extend{{ moderator.id }}')">+ Развернуть</a>
+<div id="reports{{ moderator.id }}" hidden="true">
+    <a href="#" onclick="show_text('report_extend{{ moderator.id }}', 'reports{{ moderator.id }}')">- Свернуть</a>
+    <table>
+        <tr>
+            <th>Пользователь</th>
+            <th>Категория</th>
+            <th>Время</th>
+            <th>Пожаловавшийся пользователь</th>
+            <th>Текст жалобы</th>
+        </tr>
+        {% for report in moderator.get_reports %}
+        <tr>
+            <td data-mousepopup="{% include 'main/userpopup.html' with user=report.run.user %}" onclick="location.href='{% url 'users:profile' report.run.user.slug %}'">{{ report.run.user.username }}</td>
+            <td data-mousepopup="{% include 'main/runpopup.html' with run=report.run %}" onclick="location.href='{% url 'main:run' report.run.id %}'">{{ report.run.game_category.category.name }}</td>
+            <td data-mousepopup="{% include 'main/runpopup.html' with run=report.run %}" onclick="location.href='{% url 'main:run' report.run.id %}'">{{ report.run.get_runtime_str }}</td>
+            <td data-mousepopup="{% include 'main/userpopup.html' with user=report.user %}" onclick="location.href='{% url 'users:profile' report.user.slug %}'">{{ report.user.username }}</td>
+            <td data-mousepopup="{{ report.report_text }}">{{ report.get_short_text }}</td>
+            <td><a href="{% url 'main:run' report.run.id %}">Перейти</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}
 {% endif %}
 {% endfor %}
 {% endblock %}

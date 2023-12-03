@@ -168,3 +168,6 @@ class Report(models.Model):
 
     def __str__(self):
         return self.run.__str__()
+
+    def get_short_text(self):
+        return self.report_text[:15] + '...' if len(self.report_text) > 15 else self.report_text
