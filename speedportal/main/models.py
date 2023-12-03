@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.utils.text import slugify
+from django.db.models import Subquery
 
 class Game(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -57,11 +58,8 @@ class AllowedCategory(models.Model):
         return self.game.name + ' ' + self.category.name
 
     def get_leaderboard(self):
-        return Run.objects.raw(f'SELECT * FROM ( '
-                               f'SELECT DISTINCT ON (user_id) * FROM main_run '
-                               f'WHERE game_category_id = {self.id} AND is_validated '
-                               f'ORDER BY user_id, runtime_ms ASC '
-                               f') ORDER BY runtime_ms ASC')
+        runs = Run.objects.filter(game_category=self, is_validated=True, user__is_banned=False).order_by('user', 'runtime_ms').distinct('user')
+        return Run.objects.filter(id__in=Subquery(runs.values('id'))).order_by('runtime_ms').prefetch_related('user', 'game_category', 'game_category__game', 'game_category__category')
 
 
 class Run(models.Model):
@@ -94,16 +92,13 @@ class Run(models.Model):
         return result
 
     def get_place(self):
-        return Run.objects.raw(f'SELECT 1 AS id, COUNT(*) FROM ( '
-                               f'SELECT DISTINCT ON (user_id) * FROM main_run '
-                               f'WHERE game_category_id = {self.game_category.id} AND runtime_ms < {self.runtime_ms} AND is_validated '
-                               f'ORDER BY user_id ASC) ')[0].count + 1
+        return Run.objects.filter(game_category=self, is_validated=True, user__is_banned=False, runtime_ms__lt=self.runtime_ms).order_by('user', 'runtime_ms').distinct('user').count() + 1
 
     def get_points_for_run(self):
         return max(10, 100 - self.get_place())
 
     def get_comments(self):
-        return Comment.objects.filter(run=self).order_by('-time')
+        return Comment.objects.filter(run=self).order_by('-parent_comment__time', 'time').prefetch_related('user', 'parent_comment')
 
 
 class Validation(models.Model):
@@ -143,12 +138,20 @@ class Comment(models.Model):
 
     run = models.ForeignKey(to=Run, on_delete=models.CASCADE)
     user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
+    parent_comment = models.ForeignKey(to='self', on_delete=models.CASCADE, null=True)
     comment_text = models.TextField()
     time = models.DateTimeField(default=timezone.now)
 
     class Meta:
         verbose_name = 'comment'
         verbose_name_plural = 'comments'
+
+    def save(self, *args, **kwargs):
+        super(Comment, self).save(*args, **kwargs)
+        if not self.parent_comment:
+            comment = Comment.objects.get(id=self.id)
+            comment.parent_comment = comment
+            comment.save()
 
     def __str__(self):
         return self.run.__str__()

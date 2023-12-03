@@ -10,6 +10,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(gettext_lazy('Адрес электронной почты'), unique=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    is_banned = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
     username = models.CharField(gettext_lazy('Имя пользователя'), max_length=50, unique=True)
@@ -78,3 +79,20 @@ class Moderator(models.Model):
     def get_reports(self):
         from main.models import Report
         return Report.objects.filter(run__game_category__game=self.game)
+
+    def is_banned(self):
+        return Ban.objects.filter(user=self).exists()
+
+
+class Ban(models.Model):
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE, primary_key=True)
+    moderator = models.ForeignKey(to=Moderator, on_delete=models.SET_NULL, null=True)
+    reason = models.TextField()
+    time = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name = 'ban'
+        verbose_name_plural = 'bans'
+
+    def __str__(self):
+        return self.user.__str__()

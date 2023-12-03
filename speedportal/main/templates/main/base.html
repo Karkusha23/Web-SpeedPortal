@@ -21,9 +21,13 @@
             <span><img src="media/pfps/def_pfp.jpg" height=30 width=30 data-staticpopup="{% include 'users/profilepopup.html' with user=user %}"></span>
         {% endif %}
     </div>
+    {% if messages %}
+    <ul>
     {% for message in messages %}
-        <p>{{ message }}</p>
+        <li>{{ message }}</li>
     {% endfor %}
+    </ul>
+    {% endif %}
     {% block content %}{% endblock %}
     <script src="{% static 'static_popup.js' %}"></script>
     {% block scripts %}{% endblock %}

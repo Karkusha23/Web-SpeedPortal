@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import UserRegistrationForm, UserProfileForm
-from .models import User, Moderator
+from .models import User, Moderator, Ban
 
 
 class CustomUserAdmin(UserAdmin):
@@ -32,6 +32,6 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('email',)
 
 
-
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Moderator)
+admin.site.register(Ban)
