@@ -11,4 +11,12 @@
     {% endif %}
     <p>Очки: {{ user_to_show.points }}</p>
     <p>О себе: {{ user_to_show.about }}</p>
+    {% if reports %}
+    <p>У этого пользователя есть {{ reports.count }} в вашей компетенции</p>
+    <ul>
+    {% for report in reports %}
+        <li>{{ report.report_text }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
 {% endblock %}

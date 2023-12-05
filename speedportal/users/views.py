@@ -15,6 +15,8 @@ def login(request):
             user = auth.authenticate(email=email, password=password)
             if user:
                 auth.login(request, user)
+                if user.is_banned:
+                    return render(request, 'users/banscreen.html')
                 return HttpResponseRedirect(reverse('main:home'))
     else:
         form = UserLoginForm()
@@ -40,8 +42,12 @@ def registration(request):
 
 
 def profile(request, user_slug):
+    user_to_show = User.objects.get(slug=user_slug)
+    if request.user.is_authenticated and request.user.id != user_to_show.id and request.user.is_moderator():
+        reports = user_to_show.get_relevant_reports_for(request.user)
     context = {
-        'user_to_show': User.objects.get(slug=user_slug)
+        'user_to_show': user_to_show,
+        'reports': reports
     }
     return render(request, 'users/profile.html', context)
 

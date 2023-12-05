@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Вы были забанены - Speedportal</title>
+</head>
+<body>
+  <h2>Вы были забанены на Speedportal</h2>
+  <p>Вы больше не имеете права загружать и комментировать раны{% if user.is_moderator %}, а также выполнять полномочия модератора{% endif %}</p>
+  <p>Причина бана: {{ user.get_ban_reason }}</p>
+  <p><a href="{% url 'users:logout' %}">Выйти</a></p>
+</body>
+</html>

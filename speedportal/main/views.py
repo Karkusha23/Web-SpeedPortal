@@ -39,6 +39,8 @@ def run_upload(request):
             return HttpResponseRedirect(reverse('main:home'))
     else:
         form = RunForm()
+    if user.is_banned:
+        return render(request, 'users/banscreen.html')
     context = {
         'form': form
     }
@@ -83,6 +85,8 @@ def moderation(request):
     if not moderators.exists():
         messages.error(request, 'Вы не являетесь модератором!')
         return HttpResponseRedirect(reverse('main:home'))
+    if user.is_banned:
+        return render(request, 'users/banscreen.html')
     context = {
         'moderators': moderators
     }
