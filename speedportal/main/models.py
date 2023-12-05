@@ -92,7 +92,7 @@ class Run(models.Model):
         return result
 
     def get_place(self):
-        return Run.objects.filter(game_category=self, is_validated=True, user__is_banned=False, runtime_ms__lt=self.runtime_ms).order_by('user', 'runtime_ms').distinct('user').count() + 1
+        return Run.objects.filter(game_category=self.game_category, is_validated=True, user__is_banned=False, runtime_ms__lt=self.runtime_ms).order_by('user', 'runtime_ms').distinct('user').count() + 1
 
     def get_points_for_run(self):
         return max(10, 100 - self.get_place())

@@ -60,7 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_relevant_reports_for(self, other_user):
         from main.models import Report
         games = Moderator.objects.filter(user=other_user, can_ban=True).values('game')
-        return Report.objects.filter(run__user=self, run__game_category__game__in=games).order_by('time')
+        return Report.objects.filter(run__user=self, run__game_category__game__in=games).exclude(user=other_user).order_by('time')
 
 
 class Moderator(models.Model):
@@ -87,7 +87,7 @@ class Moderator(models.Model):
 
     def get_reports(self):
         from main.models import Report
-        return Report.objects.filter(run__game_category__game=self.game)
+        return Report.objects.filter(run__game_category__game=self.game, run__user__is_banned=False).exclude(run__user=self.user).exclude(user=self.user).order_by('time')
 
 
 class Ban(models.Model):

@@ -1,4 +1,5 @@
 let rejectReasonField = document.getElementById('reject_reason_p');
+let rejectReasonInput = rejectReasonField.getElementByTagName('input');
 let submitValidation = document.getElementById('submit_validation_id');
 let validationChoices = {
     'empty': '0',
@@ -15,12 +16,12 @@ document.addEventListener('change', e => {
         break;
     case validationChoices['validate']:
         rejectReasonField.setAttribute('hidden', 'true');
-        rejectReasonField.value = '1';
+        rejectReasonInput.value = '1';
         submitValidation.removeAttribute('hidden');
         break;
     case validationChoices['reject']:
         rejectReasonField.removeAttribute('hidden');
-        rejectReasonField.value = null;
+        rejectReasonInput.value = null;
         submitValidation.removeAttribute('hidden');
     }
 });

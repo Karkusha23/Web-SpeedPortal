@@ -43,7 +43,7 @@
 </form>
 {% endif %}
 {% if run.is_validated %}
-{% if user.is_authenticated %}
+{% if user.is_authenticated and not user.is_banned %}
 <form action="{% url 'main:run' run.id %}" method="post">
     {% csrf_token %}
     <p id="report_id" data-idsubmit="submit_report_id">

@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from django import forms
-from .models import User
+from .models import User, Ban
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={
@@ -43,3 +43,14 @@ class UserLoginForm(AuthenticationForm):
     class Meta:
         model = User
         fields = ('username', 'password')
+
+
+class BanForm(forms.Form):
+    ban_reason = forms.CharField(required=True, widget=forms.TextInput(attrs={
+        'placeholder': 'Укажите причину бана'
+    }))
+
+    def save(self, user, moderator):
+        Ban.objects.create(user=user, moderator=moderator, reason=self.data['ban_reason'])
+        user.is_banned = True
+        user.save()

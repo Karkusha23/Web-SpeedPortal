@@ -4,6 +4,11 @@
 Профиль: {{ user_to_show.username }}
 {% endblock %}
 
+{% load static %}
+{% block scripts %}
+<script src="{% static 'single_input_dynamic.js' %}"></script>
+{% endblock %}
+
 {% block content %}
     <h1><img src="{{ user_to_show.pfp.url }}" height=30 width=30>{{ user_to_show.username }}</h1>
     {% if user.id == user_to_show.id %}
@@ -12,11 +17,22 @@
     <p>Очки: {{ user_to_show.points }}</p>
     <p>О себе: {{ user_to_show.about }}</p>
     {% if reports %}
-    <p>У этого пользователя есть {{ reports.count }} в вашей компетенции</p>
+    <p>У этого пользователя есть {{ reports.count }} жалобы в вашей компетенции</p>
     <ul>
     {% for report in reports %}
         <li>{{ report.report_text }}</li>
     {% endfor %}
     </ul>
+    <p>Вы можете забанить этого пользователя</p>
+    <form action="{% url 'users:profile' user_to_show.slug %}" method="post">
+    {% csrf_token %}
+    <p id="ban_id" data-idsubmit="submit_ban_id">
+        <label for="{{ ban_form.ban_reason.id_for_label }}">Укажите причину бана</label>
+        {{ ban_form.ban_reason }}
+    </p>
+    <p id="submit_ban_id" hidden="true">
+       <input type="submit">
+    </p>
+</form>
     {% endif %}
 {% endblock %}
