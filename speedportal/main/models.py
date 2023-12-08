@@ -104,7 +104,7 @@ class Run(models.Model):
 class Validation(models.Model):
     from users.models import Moderator
 
-    run = models.OneToOneField(to=Run, on_delete=models.CASCADE, primary_key=True)
+    run = models.OneToOneField(to=Run, on_delete=models.CASCADE, primary_key=True, related_name='validation')
     moderator = models.ForeignKey(to=Moderator, on_delete=models.SET_NULL, null=True)
     points = models.PositiveIntegerField(default=0)
     time = models.DateTimeField(default=timezone.now)
@@ -120,7 +120,7 @@ class Validation(models.Model):
 class Rejection(models.Model):
     from users.models import Moderator
 
-    run = models.OneToOneField(to=Run, on_delete=models.CASCADE, primary_key=True)
+    run = models.OneToOneField(to=Run, on_delete=models.CASCADE, primary_key=True, related_name='rejection')
     moderator = models.ForeignKey(to=Moderator, on_delete=models.SET_NULL, null=True)
     reason = models.TextField()
     time = models.DateTimeField(default=timezone.now)
@@ -132,11 +132,14 @@ class Rejection(models.Model):
     def __str__(self):
         return self.run.__str__()
 
+    def get_short_text(self):
+        return self.reason[:15] + '...' if len(self.reason) > 15 else self.reason
+
 
 class Comment(models.Model):
     from users.models import User
 
-    run = models.ForeignKey(to=Run, on_delete=models.CASCADE)
+    run = models.ForeignKey(to=Run, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
     parent_comment = models.ForeignKey(to='self', on_delete=models.CASCADE, null=True)
     comment_text = models.TextField()

@@ -11,7 +11,6 @@ urlpatterns = [
     path('user-<slug:user_slug>/', views.profile, name='profile'),
     path('profilechange/', views.profile_change, name='profile_change'),
     path('logout/', views.logout, name='logout'),
-    path('user-<slug:user_slug>/runs/', views.user_runs, name='user_runs')
 ]
 
 if settings.DEBUG:

@@ -49,8 +49,10 @@ def run_upload(request):
 
 def run(request, run_id):
     run = Run.objects.get(id=run_id)
-    moderator = Moderator.objects.filter(user=request.user, game=run.game_category.game) if request.user.is_authenticated and not run.is_validated and not run.is_rejected else None
-    moderator = moderator.first() if moderator else None
+    moderator = None
+    if request.user.is_authenticated and not request.user.is_banned:
+        moderator = Moderator.objects.filter(user=request.user, game=run.game_category.game) if not run.is_validated and not run.is_rejected else None
+        moderator = moderator.first() if moderator else None
     if request.method == 'POST':
         validation_form = ValidationForm(data=request.POST)
         comment_form = CommentForm(data=request.POST)
@@ -78,6 +80,16 @@ def run(request, run_id):
     }
     return render(request, 'main/run.html', context)
 
+
+def user_runs(request, user_slug):
+    context = {
+        'user_to_show': User.objects.get(slug=user_slug)
+    }
+    return render(request, 'main/userruns.html', context)
+
+@login_required
+def unvalidated_runs(request):
+    return render(request, 'main/unvalidatedruns.html')
 
 @login_required
 def moderation(request):

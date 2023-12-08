@@ -1,0 +1,14 @@
+<table>
+    <tr>
+        <th>Игра</th>
+        <th>Категория</th>
+        <th>Время</th>
+    </tr>
+    {% for run in runs %}
+    <tr>
+        <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.game_category.game.name }}</td>
+        <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.game_category.category.name }}</td>
+        <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.get_runtime_str }}</td>
+    </tr>
+    {% endfor %}
+</table>

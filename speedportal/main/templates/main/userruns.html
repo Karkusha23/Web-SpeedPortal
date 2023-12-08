@@ -2,21 +2,12 @@
 
 {% block title %}Забеги пользователя {{ user.username }}{% endblock %}
 
+{% load static %}
+{% block scripts %}
+<script src="{% static 'mouse_popup.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <h1>{% if user.id == user_to_show.id %}Ваши раны{% else %}Раны пользователя {{ user_to_show.username }}{% endif %}</h1>
-<table>
-    <tr>
-        <th>Игра</th>
-        <th>Категория</th>
-        <th>Время</th>
-    </tr>
-    {% for run in user_to_show.get_runs %}
-    <tr>
-        <td>{{ run.game_category.game.name }}</td>
-        <td>{{ run.game_category.category.name }}</td>
-        <td>{{ run.get_runtime_str }}</td>
-        <td><a href="{% url 'main:run' run.id %}">Перейти</a></td>
-    </tr>
-    {% endfor %}
-</table>
+{% include 'main/runtableuser.html' with runs=user_to_show.get_validated_runs %}
 {% endblock %}

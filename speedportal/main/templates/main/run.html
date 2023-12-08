@@ -13,12 +13,16 @@
 <p><img src="{{ run.game_category.game.banner.url }}" height=100 wigth=640></p>
 <h1>{{ run.game_category.game.name }}: {{ run.game_category.category.name }}</h1>
 <p>{{ run.game_category.extra_description }}</p>
-{% if not run.is_validated %}
-{% if run.is_rejected %}
-<p><b>Этот забег отклонен модератором!</b></p>
+{% if not run.user.is_banned %}
+    {% if not run.is_validated %}
+        {% if run.is_rejected %}
+            <p><b>Этот забег отклонен модератором!</b></p>
+        {% else %}
+            <p><i>Этот забег требует подтверждения!</i></p>
+        {% endif %}
+    {% endif %}
 {% else %}
-<p><i>Этот забег требует подтверждения!</i></p>
-{% endif %}
+    <p><b>Пользователь, загрузивший этот забег, был забанен!</b></p>
 {% endif %}
 <p>Итоговое время:</p>
 <ul><li>{{ run.get_runtime_str }}</li></ul>
@@ -26,7 +30,7 @@
 <ul><li>{{ run.video_link }}</li></ul>
 <p>Пользователь: <span data-mousepopup="{% include 'main/userpopup.html' with user=run.user %}" onclick="location.href='{% url 'users:profile' run.user.slug %}'">{{ run.user.username }}</span></p>
 <p>Загружен {{ run.time_uploaded }}</p>
-{% if moderator and moderator.can_validate_runs and run.user.id != user.id %}
+{% if moderator and moderator.can_validate_runs and run.user.id != user.id and not run.user.is_banned %}
 <form action="{% url 'main:run' run.id %}" method="post">
     {% csrf_token %}
     <p>

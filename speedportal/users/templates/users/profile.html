@@ -16,8 +16,9 @@
     {% endif %}
     <p>Очки: {{ user_to_show.points }}</p>
     <p>О себе: {{ user_to_show.about }}</p>
+    <p><a href="{% url 'main:user_runs' user_to_show.slug %}">Все забеги пользователя</a></p>
     {% if reports %}
-    <p>У этого пользователя есть {{ reports.count }} жалобы в вашей компетенции</p>
+    <p>У этого пользователя есть {{ reports.count }} жалобы в Вашей компетенции</p>
     <ul>
     {% for report in reports %}
         <li>{{ report.report_text }}</li>

@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy
 from .managers import CustomUserManager
 from django.utils.text import slugify
+from django.db.models import Subquery
 
 class User(AbstractBaseUser, PermissionsMixin):
 
@@ -33,19 +34,31 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_runs(self):
         from main.models import Run
-        return Run.objects.filter(user=self).order_by('-time_uploaded')
+        return Run.objects.filter(user=self).order_by('-time_uploaded').prefetch_related('game_category', 'game_category__game', 'game_category__category')
 
     def get_unseen_runs(self):
         from main.models import Run
-        return Run.objects.filter(user=self).filter(is_validated=False, is_rejected=False).order_by('-time_uploaded')
+        return Run.objects.filter(user=self, is_validated=False, is_rejected=False).order_by('-time_uploaded').prefetch_related('game_category', 'game_category__game', 'game_category__category')
 
     def get_validated_runs(self):
         from main.models import Run
-        return Run.objects.filter(user=self).filter(is_validated=True).order_by('-time_uploaded')
+        return Run.objects.filter(user=self, is_validated=True).order_by('-time_uploaded').prefetch_related('game_category', 'game_category__game', 'game_category__category')
 
     def get_rejected_runs(self):
         from main.models import Run
-        return Run.objects.filter(user=self).filter(is_rejected=True).order_by('-time_uploaded')
+        return Run.objects.filter(user=self, is_rejected=True).order_by('-time_uploaded').prefetch_related('rejection', 'game_category', 'game_category__game', 'game_category__category')
+
+    def has_unvalidated_runs(self):
+        from main.models import Run
+        return Run.objects.filter(user=self, is_validated=False).exists()
+
+    def has_unseen_runs(self):
+        from main.models import Run
+        return Run.objects.filter(user=self, is_validated=False, is_rejected=False).exists()
+
+    def has_rejected_runs(self):
+        from main.models import Run
+        return Run.objects.filter(user=self, is_rejected=True).exists()
 
     def is_moderator(self):
         return Moderator.objects.filter(user=self).exists()
@@ -60,7 +73,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_relevant_reports_for(self, other_user):
         from main.models import Report
         games = Moderator.objects.filter(user=other_user, can_ban=True).values('game')
-        return Report.objects.filter(run__user=self, run__game_category__game__in=games).exclude(user=other_user).order_by('time')
+        return Report.objects.filter(run__user=self, run__game_category__game__in=Subquery(games)).exclude(user=other_user).order_by('time')
 
 
 class Moderator(models.Model):

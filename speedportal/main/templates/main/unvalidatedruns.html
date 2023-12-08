@@ -1,0 +1,47 @@
+{% extends 'main/base.html' %}
+
+{% block title %}На рассмотрении{% endblock %}
+
+{% load static %}
+{% block scripts %}
+<script src="{% static 'text_show.js' %}"></script>
+<script src="{% static 'mouse_popup.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<h2>Ваши забеги, ожидающие валидации</h2>
+{% if user.has_unseen_runs %}
+<a href="#" id="extend_un" onclick="show_text('table_un', 'extend_un')">+ Развернуть ({{ user.get_unseen_runs.count }})</a>
+<div id="table_un" hidden="true">
+    <a href="#" onclick="show_text('extend_un', 'table_un')">- Свернуть</a>
+    {% include 'main/runtableuser.html' with runs=user.get_unseen_runs %}
+</div>
+{% else %}
+Нет данных для отображения
+{% endif %}
+<h3>Ваши забеги, отклоненные модераторами</h3>
+{% if user.has_rejected_runs %}
+<a href="#" id="extend_rej" onclick="show_text('table_rej', 'extend_rej')">+ Развернуть ({{ user.get_rejected_runs.count }})</a>
+<div id="table_rej" hidden="true">
+    <a href="#" onclick="show_text('extend_rej', 'table_rej')">- Свернуть</a>
+    <table>
+    <tr>
+        <th>Игра</th>
+        <th>Категория</th>
+        <th>Время</th>
+        <th>Причина отклонения</th>
+    </tr>
+    {% for run in user.get_rejected_runs %}
+    <tr>
+        <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.game_category.game.name }}</td>
+        <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.game_category.category.name }}</td>
+        <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.get_runtime_str }}</td>
+        <td data-mousepopup="{{ run.rejection.reason }}">{{ run.rejection.get_short_text }}</td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+{% else %}
+Нет данных для отображения
+{% endif %}
+{% endblock %}

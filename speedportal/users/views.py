@@ -80,10 +80,3 @@ def profile_change(request):
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('main:home'))
-
-
-def user_runs(request, user_slug):
-    context = {
-        'user_to_show': User.objects.get(slug=user_slug)
-    }
-    return render(request, 'main/userruns.html', context)
