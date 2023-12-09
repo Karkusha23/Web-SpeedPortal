@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import environ
+#import environ
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -75,24 +76,25 @@ WSGI_APPLICATION = 'speedportal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-env = environ.Env()
-environ.Env.read_env()
+#env = environ.Env()
+#environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
 
-SECRET_KEY = env("SECRET_KEY")
+#SECRET_KEY = env("SECRET_KEY")
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        # 'NAME': env("DB_NAME"),
-        # 'PASSWORD': env("DB_PASSWORD"),
-        # 'USER': env("DB_USER"),
-        # 'HOST': env("DB_HOST"),
-        # 'PORT': env("DB_PORT"),
+        #'NAME': env("POSTGRES_DB"),
+        #'PASSWORD': env("POSTGRES_PASSWORD"),
+        #'USER': env("POSTGRES_USER"),
+        #'HOST': env("POSTGRES_HOST"),
+        #'PORT': env("POSTGRES_PORT"),
         'NAME': 'speedportal_db',
-        'USER': 'postgres',
         'PASSWORD': '123',
+        'USER': 'postgres',
+        #'HOST': 'postgres_db',
         'HOST': 'localhost',
-        'PORT': '5432'
+        'PORT': '5432',
     }
 }
 
@@ -132,10 +134,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+#STATICFILES_DIRS = [
+#    BASE_DIR / 'static',
+#]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

@@ -18,7 +18,7 @@
         {% if user.is_authenticated %}
             <span><img src="{{ user.pfp.url }}" height=30 width=30 data-staticpopup="{% include 'users/profilepopup.html' with user=user %}"></span>
         {% else %}
-            <span><img src="media/pfps/def_pfp.jpg" height=30 width=30 data-staticpopup="{% include 'users/profilepopup.html' with user=user %}"></span>
+            <span><img src="/media/pfps/def_pfp.jpg" height=30 width=30 data-staticpopup="{% include 'users/profilepopup.html' with user=user %}"></span>
         {% endif %}
     </div>
     {% if messages %}
