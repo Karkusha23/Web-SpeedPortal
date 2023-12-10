@@ -78,7 +78,7 @@ class Run(models.Model):
         verbose_name_plural = 'runs'
 
     def __str__(self):
-        return self.game_category.__str__() + ' ' + self.get_runtime_str()
+        return self.user.__str__() + ' ' + self.game_category.__str__() + ' ' + self.get_runtime_str()
 
     def get_runtime_str(self):
         hours = self.runtime_ms // 3600000
@@ -92,10 +92,24 @@ class Run(models.Model):
         return result
 
     def get_place(self):
-        return Run.objects.filter(game_category=self.game_category, is_validated=True, user__is_banned=False, runtime_ms__lt=self.runtime_ms).order_by('user', 'runtime_ms').distinct('user').count() + 1
+        return Run.objects.filter(game_category=self.game_category, is_validated=True, user__is_banned=False,
+                                  runtime_ms__lt=self.runtime_ms).order_by('user', 'runtime_ms').distinct('user').count() + 1
 
     def get_points_for_run(self):
-        return max(10, 100 - self.get_place())
+        runs_above = Run.objects.filter(game_category=self.game_category, is_validated=True, user__is_banned=False,
+                                        runtime_ms__lt=self.runtime_ms).order_by('user', 'runtime_ms').distinct('user')
+        runs_under = Run.objects.filter(game_category=self.game_category, is_validated=True, user__is_banned=False,
+                                        runtime_ms__gt=self.runtime_ms).order_by('user', 'runtime_ms').distinct('user')
+        runs_above_count = runs_above.count()
+        runs_under_count = runs_under.count()
+        runs_total = runs_above_count + runs_under_count
+        if runs_under_count == 0:
+            return 1
+        run_under_first = Run.objects.filter(id__in=Subquery(runs_under.values('id'))).order_by('runtime_ms').first()
+        time_difference = (self.time_uploaded - run_under_first.time_uploaded).total_seconds() / 86400
+        points_for_place = max(int(runs_under_count * min(runs_total / 10, 1) / runs_total) * 100, 1)
+        points_for_time = min(int(time_difference * min(runs_total / 15, 1)), 100)
+        return points_for_time + points_for_place
 
     def get_comments(self):
         return Comment.objects.filter(run=self).order_by('-parent_comment__time', 'time').prefetch_related('user', 'parent_comment')

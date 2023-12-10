@@ -31,7 +31,11 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('email',)
     ordering = ('email',)
 
+class ModeratorAdmin(admin.ModelAdmin):
+    list_display = ('user', 'game')
+    list_filter = ('user', 'game')
+    search_fields = ('user', 'game')
 
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(Moderator)
+admin.site.register(Moderator, ModeratorAdmin)
 admin.site.register(Ban)

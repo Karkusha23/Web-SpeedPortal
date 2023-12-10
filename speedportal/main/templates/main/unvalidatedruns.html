@@ -19,7 +19,7 @@
 {% else %}
 Нет данных для отображения
 {% endif %}
-<h3>Ваши забеги, отклоненные модераторами</h3>
+<h2>Ваши забеги, отклоненные модераторами</h2>
 {% if user.has_rejected_runs %}
 <a href="#" id="extend_rej" onclick="show_text('table_rej', 'extend_rej')">+ Развернуть ({{ user.get_rejected_runs.count }})</a>
 <div id="table_rej" hidden="true">

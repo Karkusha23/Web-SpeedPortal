@@ -1,5 +1,5 @@
 let rejectReasonField = document.getElementById('reject_reason_p');
-let rejectReasonInput = rejectReasonField.getElementByTagName('input');
+let rejectReasonInput = rejectReasonField.getElementsByTagName('input')[0];
 let submitValidation = document.getElementById('submit_validation_id');
 let validationChoices = {
     'empty': '0',
