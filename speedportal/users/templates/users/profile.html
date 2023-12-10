@@ -6,7 +6,9 @@
 
 {% load static %}
 {% block scripts %}
+<script>let moderators_json = '{{ moderators_json | safe }}'</script>
 <script src="{% static 'single_input_dynamic.js' %}"></script>
+<script src="{% static 'make_moderator_dynamic.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -26,14 +28,43 @@
     </ul>
     <p>Вы можете забанить этого пользователя</p>
     <form action="{% url 'users:profile' user_to_show.slug %}" method="post">
-    {% csrf_token %}
-    <p id="ban_id" data-idsubmit="submit_ban_id">
-        <label for="{{ ban_form.ban_reason.id_for_label }}">Укажите причину бана</label>
-        {{ ban_form.ban_reason }}
-    </p>
-    <p id="submit_ban_id" hidden="true">
-       <input type="submit">
-    </p>
-</form>
+        {% csrf_token %}
+        <p id="ban_id" data-idsubmit="submit_ban_id">
+            <label for="{{ ban_form.ban_reason.id_for_label }}">Укажите причину бана</label>
+            {{ ban_form.ban_reason }}
+        </p>
+        <p id="submit_ban_id" hidden="true">
+            <input type="submit">
+        </p>
+    </form>
+    {% endif %}
+    {% if moderator_form %}
+    <p>Вы можете повысить этого пользователя до модератора</p>
+    <form action="{% url 'users:profile' user_to_show.slug %}" method="post">
+        {% csrf_token %}
+        <p id="game_choice_field_id">
+            <label for="{{ moderator_form.game.id_for_label }}">Выберите игру</label>
+            {{ moderator_form.game }}
+        </p>
+        <div id="can_make_moderators_id" hidden="true">
+            <label for="{{ moderator_form.can_make_moderators.id_for_label }}">Может повышать до модераторов</label>
+            {{ moderator_form.can_make_moderators }}
+        </div>
+        <div id="can_add_categories_id" hidden="true">
+            <label for="{{ moderator_form.can_add_categories.id_for_label }}">Может добавлять категории</label>
+            {{ moderator_form.can_add_categories }}
+        </div>
+        <div id="can_validate_runs_id" hidden="true">
+            <label for="{{ moderator_form.can_validate_runs.id_for_label }}">Может одобрять забеги</label>
+            {{ moderator_form.can_validate_runs }}
+        </div>
+        <div id="can_ban_id" hidden="true">
+            <label for="{{ moderator_form.can_ban.id_for_label }}">Может банить пользователей</label>
+            {{ moderator_form.can_ban }}
+        </div>
+        <p id="moderator_submit_id" hidden="true">
+            <input type="submit">
+        </p>
+    </form>
     {% endif %}
 {% endblock %}

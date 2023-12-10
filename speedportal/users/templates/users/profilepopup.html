@@ -1,7 +1,7 @@
 {% if user.is_authenticated %}
 <p align=&quot;right&quot;><a href=&quot;{% url 'users:profile' user.slug %}&quot;>Профиль</a></p>
 {% if user.has_unvalidated_runs %}
-<p align=&quot;right&quot;><a href=&quot;{% url 'main:unvalidated_runs' %}&quot;>Забеги на рассмотрении</a></p>
+<p align=&quot;right&quot;><a href=&quot;{% url 'main:unvalidated_runs' %}&quot;>Забеги</a></p>
 {% endif %}
 {% if user.is_moderator %}
 <p align=&quot;right&quot;><a href=&quot;{% url 'main:moderation' %}&quot;>Модерация</a></p>

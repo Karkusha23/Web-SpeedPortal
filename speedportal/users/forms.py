@@ -1,6 +1,8 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from django import forms
-from .models import User, Ban
+from django.db.models import Subquery
+from .models import User, Moderator, Ban
+from main.models import Game
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={
@@ -54,3 +56,24 @@ class BanForm(forms.Form):
         Ban.objects.create(user=user, moderator=moderator, reason=self.data['ban_reason'])
         user.is_banned = True
         user.save()
+
+
+class ModeratorForm(forms.Form):
+    game = forms.ModelChoiceField(queryset=Game.objects.none(), required=True)
+    can_make_moderators = forms.BooleanField(initial=False, required=False)
+    can_add_categories = forms.BooleanField(initial=False, required=False)
+    can_validate_runs = forms.BooleanField(initial=False, required=False)
+    can_ban = forms.BooleanField(initial=False, required=False)
+
+    def __init__(self, game_values=None, *args, **kwargs):
+        super(ModeratorForm, self).__init__(*args, **kwargs)
+        if game_values:
+            self.fields['game'].queryset = Game.objects.filter(id__in=Subquery(game_values)).order_by('name')
+
+    def save(self, user):
+        print(self.data.get('can_validate_runs', None))
+        Moderator.objects.create(user=user, game=Game.objects.get(id=self.data['game']),
+                         can_make_moderators=(self.data.get('can_make_moderators', None) is not None),
+                         can_add_categories=(self.data.get('can_add_categories', None) is not None),
+                         can_validate_runs=(self.data.get('can_validate_runs', None) is not None),
+                         can_ban=(self.data.get('can_ban', None) is not None))
