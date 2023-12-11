@@ -27,7 +27,7 @@
     {% endfor %}
     </ul>
     <p>Вы можете забанить этого пользователя</p>
-    <form action="{% url 'users:profile' user_to_show.slug %}" method="post">
+    <form action="{% url 'users:profile_ban_post' user_to_show.slug %}" method="post">
         {% csrf_token %}
         <p id="ban_id" data-idsubmit="submit_ban_id">
             <label for="{{ ban_form.ban_reason.id_for_label }}">Укажите причину бана</label>
@@ -40,7 +40,7 @@
     {% endif %}
     {% if moderator_form %}
     <p>Вы можете повысить этого пользователя до модератора</p>
-    <form action="{% url 'users:profile' user_to_show.slug %}" method="post">
+    <form action="{% url 'users:profile_moderator_post' user_to_show.slug %}" method="post">
         {% csrf_token %}
         <p id="game_choice_field_id">
             <label for="{{ moderator_form.game.id_for_label }}">Выберите игру</label>

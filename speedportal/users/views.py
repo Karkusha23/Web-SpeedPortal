@@ -47,21 +47,10 @@ def registration(request):
 def profile(request, user_slug):
     user_to_show = User.objects.get(slug=user_slug)
     moderators_json = serializers.serialize('json', request.user.get_moderators())
-    if request.method == 'POST':
-        ban_form = BanForm(data=request.POST)
-        moderator_form = ModeratorForm(Game.objects.all().values('id'), data=request.POST)
-        if ban_form.is_valid():
-            ban_form.save(user_to_show, Moderator.objects.get(user=request.user))
-            messages.success(request, 'Пользователь успешно забанен')
-            return HttpResponseRedirect(reverse('main:moderation'))
-        elif moderator_form.is_valid():
-            moderator_form.save(user_to_show)
-            messages.success(request, f'Вы успешно повысили {user_to_show.username} до модератора')
-            return HttpResponseRedirect(reverse('users:profile', kwargs={'user_slug': user_slug}))
-    else:
-        ban_form = BanForm()
-        moderator_form = ModeratorForm(request.user.get_moderators().filter(can_make_moderators=True)
-                                       .exclude(game__in=Subquery(Moderator.objects.filter(user=user_to_show).values('game'))).values('game__id'))
+    ban_form = BanForm()
+    moderator_form = ModeratorForm(request.user.get_relevant_moderators_ids(user_to_show)) if request.user.is_authenticated else None
+    if moderator_form and moderator_form.fields['game'].queryset.count() == 0:
+        moderator_form = None
     reports = None
     if request.user.is_authenticated and request.user.id != user_to_show.id and request.user.is_moderator():
         reports = user_to_show.get_relevant_reports_for(request.user)
@@ -70,9 +59,36 @@ def profile(request, user_slug):
         'reports': reports,
         'ban_form': ban_form,
         'moderators_json': moderators_json,
-        'moderator_form': moderator_form if moderator_form.fields['game'].queryset.count() > 0 else None
+        'moderator_form': moderator_form
     }
     return render(request, 'users/profile.html', context)
+
+
+def profile_ban_post(request, user_slug):
+    if request.method != 'POST':
+        return HttpResponseRedirect(reverse('users:profile', kwargs={'user_slug': user_slug}))
+    user_to_show = User.objects.get(slug=user_slug)
+    ban_form = BanForm(data=request.POST)
+    if ban_form.is_valid():
+        ban_form.save(user_to_show, Moderator.objects.get(user=request.user))
+        messages.success(request, 'Пользователь успешно забанен')
+    else:
+        messages.error(request, 'Ошибка: неверная форма бана')
+    return HttpResponseRedirect(reverse('users:profile', kwargs={'user_slug': user_slug}))
+
+
+def profile_moderator_post(request, user_slug):
+    if request.method != 'POST':
+        return HttpResponseRedirect(reverse('users:profile', kwargs={'user_slug': user_slug}))
+    user_to_show = User.objects.get(slug=user_slug)
+    moderator_form = ModeratorForm(data=request.POST)
+    if moderator_form.is_valid():
+        moderator_form.save(user_to_show)
+        messages.success(request, f'Вы успешно повысили {user_to_show.username} до модератора')
+    else:
+        messages.error(request, 'Ошибка: неверная форма повышения до модератора')
+    return HttpResponseRedirect(reverse('users:profile', kwargs={'user_slug': user_slug}))
+
 
 
 @login_required

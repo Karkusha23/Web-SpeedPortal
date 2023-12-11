@@ -75,6 +75,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         games = Moderator.objects.filter(user=other_user, can_ban=True).values('game')
         return Report.objects.filter(run__user=self, run__game_category__game__in=Subquery(games)).exclude(user=other_user).order_by('time')
 
+    def get_relevant_moderators_ids(self, user_to_promote):
+        return self.get_moderators().filter(can_make_moderators=True).exclude(game__in=Subquery(Moderator.objects.filter(user=user_to_promote).values('game'))).values('game__id')
 
 class Moderator(models.Model):
     from main.models import Game

@@ -65,7 +65,7 @@ class ModeratorForm(forms.Form):
     can_validate_runs = forms.BooleanField(initial=False, required=False)
     can_ban = forms.BooleanField(initial=False, required=False)
 
-    def __init__(self, game_values=None, *args, **kwargs):
+    def __init__(self, game_values=Game.objects.all().values('id'), *args, **kwargs):
         super(ModeratorForm, self).__init__(*args, **kwargs)
         if game_values:
             self.fields['game'].queryset = Game.objects.filter(id__in=Subquery(game_values)).order_by('name')

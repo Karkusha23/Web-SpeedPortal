@@ -31,7 +31,7 @@
 <p>Пользователь: <span data-mousepopup="{% include 'main/userpopup.html' with user=run.user %}" onclick="location.href='{% url 'users:profile' run.user.slug %}'">{{ run.user.username }}</span></p>
 <p>Загружен {{ run.time_uploaded }}</p>
 {% if moderator and moderator.can_validate_runs and run.user.id != user.id and not run.user.is_banned %}
-<form action="{% url 'main:run' run.id %}" method="post">
+<form action="{% url 'main:run_validation_post' run.id %}" method="post">
     {% csrf_token %}
     <p>
         <label for="{{ validation_form.validate_choice.id_for_label }}">Принять/Отклонить забег?</label>
@@ -48,7 +48,8 @@
 {% endif %}
 {% if run.is_validated %}
 {% if user.is_authenticated and not user.is_banned %}
-<form action="{% url 'main:run' run.id %}" method="post">
+{% if user.id != run.user.id %}
+<form action="{% url 'main:run_report_post' run.id %}" method="post">
     {% csrf_token %}
     <p id="report_id" data-idsubmit="submit_report_id">
         <label for="{{ report_form.report_text.id_for_label }}">Вы можете пожаловаться на забег</label>
@@ -58,7 +59,8 @@
        <input type="submit">
     </p>
 </form>
-<form action="{% url 'main:run' run.id %}" method="post">
+{% endif %}
+<form action="{% url 'main:run_comment_post' run.id %}" method="post">
     {% csrf_token %}
     <p id="comment_id" data-idsubmit="submit_comment_id">
         <label for="{{ comment_form.comment_text.id_for_label }}">Оставьте комментарий</label>

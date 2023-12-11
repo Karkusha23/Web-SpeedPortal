@@ -108,7 +108,7 @@ class Run(models.Model):
         run_under_first = Run.objects.filter(id__in=Subquery(runs_under.values('id'))).order_by('runtime_ms').first()
         time_difference = (self.time_uploaded - run_under_first.time_uploaded).total_seconds() / 86400
         points_for_place = max(int(runs_under_count * min(runs_total / 10, 1) / runs_total) * 100, 1)
-        points_for_time = min(int(time_difference * min(runs_total / 15, 1)), 100)
+        points_for_time = min(max(int(time_difference * min(runs_total / 15, 1)), 0), 100)
         return points_for_time + points_for_place
 
     def get_comments(self):
