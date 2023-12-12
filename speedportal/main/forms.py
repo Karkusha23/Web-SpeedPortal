@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Subquery
 from main.models import Game, Category, AllowedCategory, Run, Validation, Rejection, Comment, Report
 from users.models import User
 
@@ -96,3 +97,26 @@ class ReportForm(forms.Form):
 
     def save(self, run, user):
         Report.objects.create(run=run, user=user, report_text=self.data['report_text'])
+
+
+class AllowedCategoryForm(forms.Form):
+    category = forms.ModelChoiceField(required=False, queryset=Category.objects.none())
+    category_name = forms.CharField(required=True, widget=forms.TextInput(attrs={
+        'placeholder': 'Название категории'
+    }))
+    description = forms.CharField(required=True, widget=forms.TextInput(attrs={
+        'placeholder': 'Описание категории'
+    }))
+
+    def __init__(self, category_values=Category.objects.all().values('id'), *args, **kwargs):
+        super(AllowedCategoryForm, self).__init__(*args, **kwargs)
+        if category_values:
+            self.fields['category'].queryset = Category.objects.filter(id__in=Subquery(category_values))
+
+    def save(self, game):
+        if self.data['category']:
+            AllowedCategory.objects.create(game=game, category=Category.objects.get(id=self.data['category']), extra_description=self.data['description'])
+        else:
+            new_category = Category(name=self.data['category_name'])
+            new_category.save()
+            AllowedCategory.objects.create(game=game, category=new_category, extra_description=self.data['description'])

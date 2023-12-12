@@ -24,7 +24,10 @@ class Game(models.Model):
         return self.name
 
     def get_allowed_categories(self):
-        return AllowedCategory.objects.filter(game=self)
+        return AllowedCategory.objects.filter(game=self).prefetch_related('category')
+
+    def get_unallowed_categories_ids(self):
+        return Category.objects.exclude(id__in=Subquery(AllowedCategory.objects.filter(game=self).values('category__id'))).values('id')
 
 
 class Category(models.Model):

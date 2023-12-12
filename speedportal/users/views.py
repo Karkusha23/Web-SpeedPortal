@@ -46,7 +46,7 @@ def registration(request):
 
 def profile(request, user_slug):
     user_to_show = User.objects.get(slug=user_slug)
-    moderators_json = serializers.serialize('json', request.user.get_moderators())
+    moderators_json = serializers.serialize('json', request.user.get_moderators()) if request.user.is_authenticated else None
     ban_form = BanForm()
     moderator_form = ModeratorForm(request.user.get_relevant_moderators_ids(user_to_show)) if request.user.is_authenticated else None
     if moderator_form and moderator_form.fields['game'].queryset.count() == 0:

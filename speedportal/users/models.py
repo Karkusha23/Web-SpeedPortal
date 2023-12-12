@@ -63,6 +63,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     def is_moderator(self):
         return Moderator.objects.filter(user=self).exists()
 
+    def can_add_categories(self, game):
+        if not self.is_authenticated:
+            return False
+        moderators = Moderator.objects.filter(user=self, game=game)
+        if not moderators.exists():
+            return False
+        return moderators.first().can_add_categories
+
     def get_moderators(self):
         return Moderator.objects.filter(user=self)
 

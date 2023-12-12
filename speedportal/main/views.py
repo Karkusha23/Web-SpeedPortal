@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from main.models import Game, Category, AllowedCategory, Run
-from main.forms import RunForm, ValidationForm, CommentForm, ReportForm
+from main.forms import RunForm, ValidationForm, CommentForm, ReportForm, AllowedCategoryForm
 from users.models import User, Moderator
 
 def index(request):
@@ -23,8 +23,17 @@ def all_games(request):
 
 def game(request, game_slug):
     game = Game.objects.get(slug=game_slug)
+    if request.method == 'POST':
+        form = AllowedCategoryForm(data=request.POST)
+        if form.is_valid():
+            form.save(game)
+            messages.success(request, 'Вы успешно добавили категорию')
+        else:
+            messages.error(request, 'Ошибка: неверная форма категории')
+    form = AllowedCategoryForm(game.get_unallowed_categories_ids())
     context = {
         'game': game,
+        'form': form if request.user.is_authenticated and request.user.can_add_categories(game) else None
     }
     return render(request, 'main/game.html', context)
 
