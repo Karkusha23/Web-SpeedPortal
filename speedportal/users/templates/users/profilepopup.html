@@ -1,5 +1,6 @@
 {% if user.is_authenticated %}
 <p align=&quot;right&quot;><a href=&quot;{% url 'users:profile' user.slug %}&quot;>Профиль</a></p>
+<p align=&quot;right&quot;><a href=&quot;{% url 'main:run_upload' %}&quot;>Загрузить забег</a></p>
 {% if user.has_unvalidated_runs %}
 <p align=&quot;right&quot;><a href=&quot;{% url 'main:unvalidated_runs' %}&quot;>Забеги</a></p>
 {% endif %}

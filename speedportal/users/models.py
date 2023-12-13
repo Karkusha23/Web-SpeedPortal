@@ -72,7 +72,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return moderators.first().can_add_categories
 
     def get_moderators(self):
-        return Moderator.objects.filter(user=self)
+        return Moderator.objects.filter(user=self).prefetch_related('game')
 
     def get_ban_reason(self):
         if self.is_banned:

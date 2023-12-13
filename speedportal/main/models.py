@@ -176,6 +176,10 @@ class Comment(models.Model):
     def __str__(self):
         return self.run.__str__()
 
+    def is_moderator(self):
+        from users.models import Moderator
+        return Moderator.objects.filter(user=self.user, game=self.run.game_category.game).exists()
+
 
 class Report(models.Model):
     from users.models import User

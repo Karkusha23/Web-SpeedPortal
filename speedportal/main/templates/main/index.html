@@ -5,8 +5,28 @@
 {% endblock %}
 
 {% load static %}
+{% block scripts %}
+<script src="{% static 'mouse_popup.js' %}"></script>
+{% endblock %}
 
 {% block content %}
 <h1>Главная страница</h1>
 <p>Вы можете <a href="{% url 'main:run_upload' %}">загрузить свой ран</a></p>
+<h3>Последние забеги:</h3>
+<table>
+    <tr>
+        <th>Пользователь</th>
+        <th>Игра</th>
+        <th>Категория</th>
+        <th>Время</th>
+    </tr>
+    {% for run in runs %}
+    <tr>
+        <td data-mousepopup="{% include 'main/userpopup.html' with user=run.user %}" onclick="location.href='{% url 'users:profile' run.user.slug %}'"><img src="{{ run.user.pfp.url }}" height=20 width=20>{{ run.user.username }}</td>
+        <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.game_category.game.name }}</td>
+        <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.game_category.category.name }}</td>
+        <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.get_runtime_str }}</td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}

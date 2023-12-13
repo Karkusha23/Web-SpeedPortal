@@ -75,7 +75,11 @@
 <ul>
 {% for comment in run.get_comments %}
     <li>
-        <img src="{{ comment.user.pfp.url }}" height=20 width=20><span data-mousepopup="{% include 'main/userpopup.html' with user=comment.user %}" onclick="location.href='{% url 'users:profile' comment.user.slug %}'">{{ comment.user.username }}</span> {{ comment.time }}
+        <img src="{{ comment.user.pfp.url }}" height=20 width=20>
+        <span data-mousepopup="{% include 'main/userpopup.html' with user=comment.user %}" onclick="location.href='{% url 'users:profile' comment.user.slug %}'">
+                {{ comment.user.username }}{% if comment.is_moderator %}<span style="color:green"> - Модератор</span>{% endif %}
+        </span>
+        {{ comment.time }}
         <p>{{ comment.comment_text }}</p>
     </li>
 {% endfor %}

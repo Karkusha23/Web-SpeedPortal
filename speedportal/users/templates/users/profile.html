@@ -18,7 +18,17 @@
     {% endif %}
     <p>Очки: {{ user_to_show.points }}</p>
     <p>О себе: {{ user_to_show.about }}</p>
-    <p><a href="{% url 'main:user_runs' user_to_show.slug %}">Все забеги пользователя</a></p>
+    <p><a href="{% url 'main:user_runs' user_to_show.slug %}">Все забеги</a></p>
+    {% if user_to_show.is_moderator %}
+    {% if user.id == user_to_show.id %}Вы являетесь модератором по следующим играм{% else %}Этот пользователь является модератором по следующим играм{% endif %}
+    <ul>
+    {% for moderator in user_to_show.get_moderators %}
+        <li>
+            {{ moderator.game.name }}
+        </li>
+    {% endfor %}
+    </ul>
+    {% endif %}
     {% if reports %}
     <p>У этого пользователя есть {{ reports.count }} жалобы в Вашей компетенции</p>
     <ul>
