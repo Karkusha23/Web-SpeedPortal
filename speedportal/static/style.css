@@ -2,3 +2,15 @@
   display: flex;
   justify-content: space-between;
 }
+
+table {
+    border: 1px solid;
+    border-collapse: collapse;
+    width: 50%;
+    th {
+        border: 1px solid;
+    }
+    td {
+        border: 1px solid;
+    }
+}

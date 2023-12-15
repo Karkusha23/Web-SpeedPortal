@@ -1,5 +1,7 @@
 <p><img src=&quot;{{ run.game_category.game.banner.url }}&quot; height=&quot;40&quot; width=&quot;256&quot;></p>
-{% if not run.is_validated and not run.is_rejected %}
+{% if run.user.is_banned %}
+<p><b>Внимание! Автор этого забега был забанен!</b></p>
+{% elif not run.is_validated and not run.is_rejected %}
 <p><i>Этот забег требует подтверждения!</i></p>
 {% elif run.is_rejected %}
 <p><b>Внимание! Этот забег отклонен модераторами!</b></p>

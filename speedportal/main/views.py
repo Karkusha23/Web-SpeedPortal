@@ -8,7 +8,7 @@ from users.models import User, Moderator
 
 def index(request):
     context = {
-        'runs': Run.objects.all().order_by('-time_uploaded').prefetch_related('user', 'game_category', 'game_category__game', 'game_category__category')[:10]
+        'runs': Run.objects.filter(is_validated=True, user__is_banned=False).order_by('-time_uploaded').prefetch_related('user', 'game_category', 'game_category__game', 'game_category__category')[:10]
     }
     return render(request, 'main/index.html', context)
 

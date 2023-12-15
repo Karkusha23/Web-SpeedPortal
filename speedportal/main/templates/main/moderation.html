@@ -32,7 +32,6 @@
             <td data-mousepopup="{% include 'main/userpopup.html' with user=run.user %}" onclick="location.href='{% url 'users:profile' run.user.slug %}'">{{ run.user.username }}</td>
             <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.game_category.category.name }}</td>
             <td data-mousepopup="{% include 'main/runpopup.html' with run=run %}" onclick="location.href='{% url 'main:run' run.id %}'">{{ run.get_runtime_str }}</td>
-            <td><a href="{% url 'main:run' run.id %}">Перейти</a></td>
         </tr>
         {% endfor %}
     </table>
@@ -58,7 +57,6 @@
             <td data-mousepopup="{% include 'main/runpopup.html' with run=report.run %}" onclick="location.href='{% url 'main:run' report.run.id %}'">{{ report.run.get_runtime_str }}</td>
             <td data-mousepopup="{% include 'main/userpopup.html' with user=report.user %}" onclick="location.href='{% url 'users:profile' report.user.slug %}'">{{ report.user.username }}</td>
             <td data-mousepopup="{{ report.report_text }}">{{ report.get_short_text }}</td>
-            <td><a href="{% url 'main:run' report.run.id %}">Перейти</a></td>
         </tr>
         {% endfor %}
     </table>

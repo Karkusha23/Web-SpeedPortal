@@ -16,6 +16,9 @@
     {% if user.id == user_to_show.id %}
     <a href="{% url 'users:profile_change' %}">Изменить</a>
     {% endif %}
+    {% if user_to_show.is_banned %}
+    <p><b>Этот пользователь забанен!</b></p>
+    {% else %}
     <p>Очки: {{ user_to_show.points }}</p>
     <p>О себе: {{ user_to_show.about }}</p>
     <p><a href="{% url 'main:user_runs' user_to_show.slug %}">Все забеги</a></p>
@@ -76,5 +79,6 @@
             <input type="submit">
         </p>
     </form>
+    {% endif %}
     {% endif %}
 {% endblock %}
