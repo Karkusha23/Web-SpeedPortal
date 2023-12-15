@@ -47,8 +47,7 @@
 </form>
 {% endif %}
 {% if run.is_validated %}
-{% if user.is_authenticated and not user.is_banned %}
-{% if user.id != run.user.id %}
+{% if user.is_authenticated and not user.is_banned and user.id != run.user.id %}
 <form action="{% url 'main:run_report_post' run.id %}" method="post">
     {% csrf_token %}
     <p id="report_id" data-idsubmit="submit_report_id">
@@ -60,6 +59,18 @@
     </p>
 </form>
 {% endif %}
+{% if run.get_same_runs.exists %}
+{% if run.has_better_runs %}
+<p>Это не лучший результат этого пользователя в данной категории</p>
+{% endif %}
+<p>Смотрите также другие забеги этого пользователя в этой категории</p>
+<ul>
+    {% for same_run in run.get_same_runs %}
+    <li data-mousepopup="{% include 'main/runpopup.html' with run=same_run %}" onclick="location.href='{% url 'main:run' same_run.id %}'">{{ same_run.get_runtime_str }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% if user.is_authenticated and not user.is_banned %}
 <form action="{% url 'main:run_comment_post' run.id %}" method="post">
     {% csrf_token %}
     <p id="comment_id" data-idsubmit="submit_comment_id">

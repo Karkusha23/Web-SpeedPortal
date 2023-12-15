@@ -114,6 +114,12 @@ class Run(models.Model):
         points_for_time = min(max(int(time_difference * min(runs_total / 15, 1)), 0), 100)
         return points_for_time + points_for_place
 
+    def get_same_runs(self):
+        return Run.objects.filter(game_category=self.game_category, user=self.user, is_validated=True).exclude(id=self.id).order_by('runtime_ms').prefetch_related('user', 'game_category', 'game_category__game', 'game_category__category')
+
+    def has_better_runs(self):
+        return Run.objects.filter(game_category=self.game_category, user=self.user, is_validated=True, runtime_ms__lt=self.runtime_ms).exists()
+
     def get_comments(self):
         return Comment.objects.filter(run=self).order_by('-parent_comment__time', 'time').prefetch_related('user', 'parent_comment')
 
