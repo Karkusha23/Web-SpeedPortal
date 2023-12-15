@@ -1,5 +1,7 @@
 {% extends 'main/base.html' %}
 
+{% block title %}Загрузить забег{% endblock %}
+
 {% block content %}
 {{ form.errors }}
 <form action="{% url 'main:run_upload' %}" method="post">
