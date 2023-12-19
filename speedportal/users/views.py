@@ -70,7 +70,7 @@ def profile_ban_post(request, user_slug):
     user_to_show = User.objects.get(slug=user_slug)
     ban_form = BanForm(data=request.POST)
     if ban_form.is_valid():
-        ban_form.save(user_to_show, Moderator.objects.get(user=request.user))
+        ban_form.save(user_to_show, Moderator.objects.filter(user=request.user).first())
         messages.success(request, 'Пользователь успешно забанен')
     else:
         messages.error(request, 'Ошибка: неверная форма бана')
