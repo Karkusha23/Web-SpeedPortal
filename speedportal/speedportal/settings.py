@@ -95,6 +95,7 @@ DATABASES = {
         #'HOST': 'postgres_db',
         'HOST': 'localhost',
         'PORT': '5432',
+        'ATOMIC_REQUESTS': True
     }
 }
 

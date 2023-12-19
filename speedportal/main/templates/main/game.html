@@ -18,7 +18,7 @@
     <ul>
     {% for allowed_category in game.get_allowed_categories %}
         <li>
-            <a href="{% url 'main:leaderboard' game.slug allowed_category.category.slug %}">{{ allowed_category.category.name }}</a>
+            <a href="{% url 'main:leaderboard' game.slug allowed_category.category.slug %}">{{ allowed_category.category.name }}</a> - {{ allowed_category.extra_description }}
         </li>
     {% endfor %}
     </ul>
